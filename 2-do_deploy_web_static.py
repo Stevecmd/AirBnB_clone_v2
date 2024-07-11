@@ -3,12 +3,31 @@
 Fabric script to distribute an archive to web servers
 """
 
+from datetime import datetime
+from fabric.api import *
 import os
-from fabric.api import env, put, run
 
-# Define the remote hosts (web servers)
 env.hosts = ['54.160.94.43', '34.203.38.175']
-env.user = "ubuntu"  # SSH user for the web servers
+env.user = "ubuntu"
+
+
+def do_pack():
+    """
+    Creates a .tgz archive from the contents of the web_static folder.
+
+    Returns:
+        str: The archive path if the archive has been correctly generated.
+        None: If the archive was not generated.
+    """
+    local("mkdir -p versions")
+    date = datetime.now().strftime("%Y%m%d%H%M%S")
+    archived_f_path = "versions/web_static_{}.tgz".format(date)
+    t_gzip_archive = local("tar -cvzf {} web_static".format(archived_f_path))
+
+    if t_gzip_archive.succeeded:
+        return archived_f_path
+    else:
+        return None
 
 
 def do_deploy(archive_path):
@@ -27,39 +46,34 @@ def do_deploy(archive_path):
 
     try:
         # Extract file name from path
-        archive_name = os.path.basename(archive_path)
-        # Remove extension to get the folder name
-        archive_folder = archive_name.replace('.tgz', '') \
-                                     .replace('.tar.gz', '')
+        archived_file = archive_path[9:]
+        newest_version = "/data/web_static/releases/" + archived_file[:-4]
+        archived_file = "/tmp/" + archived_file
 
         # Upload archive to /tmp/ directory on remote servers
         put(archive_path, '/tmp/')
 
         # Create directory structure for deployment
-        run(f"mkdir -p /data/web_static/releases/{archive_folder}/")
+        run("sudo mkdir -p {}".format(newest_version))
 
         # Extract archive into the specified directory
-        run(f"tar -xzf /tmp/{archive_name} "
-            f"-C /data/web_static/releases/{archive_folder}/")
+        run("sudo tar -xzf {} -C {}/".format(archived_file, newest_version))
 
         # Remove the uploaded archive from /tmp/
-        run(f"rm /tmp/{archive_name}")
+        run("sudo rm {}".format(archived_file))
 
         # Move contents to the proper location
-        run("mv /data/web_static/releases/{}/web_static/* "
-            "/data/web_static/releases/{}/".format(archive_folder,
-                                                   archive_folder))
+        run("sudo mv {}/web_static/* {}"
+            .format(newest_version, newest_version))
 
         # Remove the original 'web_static' directory
-        run("rm -rf /data/web_static/releases/{}/web_static".format(
-            archive_folder))
+        run("sudo rm -rf {}/web_static".format(newest_version))
 
         # Update the symbolic link to the current deployment
-        run("rm -rf /data/web_static/current")
-        run("ln -s /data/web_static/releases/{}/ "
-            "/data/web_static/current".format(archive_folder))
+        run("sudo rm -rf /data/web_static/current")
+        run("sudo ln -s {} /data/web_static/current".format(newest_version))
 
-        print("New version deployed successfully!")
+        print("New version deployed!")
         return True
 
     except Exception as e:
