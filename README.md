@@ -433,7 +433,7 @@ Disconnecting from 34.203.38.175... done.
 
 ```
 
-Keep it clean!
+6. Keep it clean!
 Write a Fabric script (based on the file `3-deploy_web_static.py`) that deletes out-of-date archives, using the function `do_clean`:
 
 - Prototype: `def do_clean(number=0)`:
@@ -461,3 +461,67 @@ total 48
 
 ```
 File: `100-clean_web_static.py`
+
+7. Puppet for setup
+Redo the task #0 but by using Puppet:
+```sh
+
+ubuntu@197045-web-01:~$ sudo apt install puppet
+ubuntu@197045-web-01:~$ puppet apply 101-setup_web_static.pp
+ubuntu@197045-web-01:~$ ls -l /data
+total 4
+drwxr-xr-x 4 ubuntu ubuntu 4096 Jul 11 07:42 web_static
+ubuntu@197045-web-01:~$ ls -l /data/web_static
+total 8
+lrwxrwxrwx 1 ubuntu ubuntu   30 Jul 11 07:42 current -> /data/web_static/releases/test
+drwxr-xr-x 5 ubuntu ubuntu 4096 Jul 11 07:01 releases
+drwxr-xr-x 2 ubuntu ubuntu 4096 Jul 10 05:28 shared
+ubuntu@197045-web-01:~$ cat /data/web_static/current/index.html
+<html>
+  <head>
+  </head>
+  <body>
+    Holberton School
+  </body>
+</html>
+ubuntu@197045-web-01:~$ curl localhost/hbnb_static/index.html
+<html>
+  <head>
+  </head>
+  <body>
+    Holberton School
+  </body>
+</html>
+
+```
+```sh
+
+ubuntu@197045-web-02:~$ sudo apt install puppet
+ubuntu@197045-web-02:~$ puppet apply 101-setup_web_static.pp
+ubuntu@197045-web-02:~$ ls -l /data
+total 4
+drwxr-xr-x 4 ubuntu ubuntu 4096 Jul 11 07:47 web_static
+ubuntu@197045-web-02:~$ ls -l /data/web_static
+total 8
+lrwxrwxrwx 1 ubuntu ubuntu   30 Jul 11 07:47 current -> /data/web_static/releases/test
+drwxr-xr-x 5 ubuntu ubuntu 4096 Jul 11 07:01 releases
+drwxr-xr-x 2 ubuntu ubuntu 4096 Jul 11 06:02 shared
+ubuntu@197045-web-02:~$ cat /data/web_static/current/index.html
+<html>
+  <head>
+  </head>
+  <body>
+    Holberton School
+  </body>
+</html>
+ubuntu@197045-web-02:~$ curl localhost/hbnb_static/index.html
+<html>
+  <head>
+  </head>
+  <body>
+    Holberton School
+  </body>
+</html>
+
+```
+File: `101-setup_web_static.pp`
