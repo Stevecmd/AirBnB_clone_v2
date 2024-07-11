@@ -160,3 +160,304 @@ deactivate
 ```sh
 ./install_dependencies.sh
 ```
+
+1. Compress before sending
+
+Write a Fabric script that generates a .tgz archive from the contents of the web_static folder of your AirBnB Clone repo, using the function do_pack.
+
+- Prototype: def `do_pack()`:
+- All files in the folder `web_static` must be added to the final archive
+- All archives must be stored in the folder `versions` (your function should create this folder if it doesn’t exist)
+- The name of the archive created must be `web_static_<year><month><day><hour><minute><second>.tgz`
+- The function `do_pack` must return the archive path if the archive has been correctly generated. Otherwise, it should return `None`
+
+```sh
+
+(venv) stevecmd@DESKTOP-UTB295U:~/ALX/AirBnB_clone_v2$ fab -f 1-pack_web_static.py do_pack
+Packing web_static to versions/web_static_20240711091746.tgz
+[localhost] local: tar -cvzf versions/web_static_20240711091746.tgz web_static
+web_static/
+web_static/5-index.html
+web_static/README.md
+web_static/102-index.html
+web_static/6-index.html
+web_static/2-index.html
+web_static/8-index.html
+web_static/1-index.html
+web_static/103-index.html
+web_static/4-index.html
+web_static/7-index.html
+web_static/101-index.html
+web_static/3-index.html
+web_static/images/
+web_static/images/logo.png
+web_static/images/icon_bath.png
+web_static/images/icon_bed.png
+web_static/images/icon_pets.png
+web_static/images/icon_group.png
+web_static/images/icon.ico
+web_static/images/icon_tv.png
+web_static/images/icon_wifi.png
+web_static/styles/
+web_static/styles/103-common.css
+web_static/styles/103-header.css
+web_static/styles/102-header.css
+web_static/styles/3-header.css
+web_static/styles/103-places.css
+web_static/styles/102-filters.css
+web_static/styles/101-places.css
+web_static/styles/7-places.css
+web_static/styles/2-header.css
+web_static/styles/4-common.css
+web_static/styles/103-footer.css
+web_static/styles/4-filters.css
+web_static/styles/102-places.css
+web_static/styles/5-filters.css
+web_static/styles/102-footer.css
+web_static/styles/8-places.css
+web_static/styles/3-footer.css
+web_static/styles/2-common.css
+web_static/styles/103-filters.css
+web_static/styles/6-filters.css
+web_static/styles/102-common.css
+web_static/styles/2-footer.css
+web_static/styles/100-places.css
+web_static/styles/3-common.css
+web_static/0-index.html
+web_static/100-index.html
+web_static packed: versions/web_static_20240711091746.tgz -> 21070Bytes
+
+Done.
+
+```
+
+4. Deploy archive! 
+
+Write a Fabric script (based on the file `1-pack_web_static.py`) that distributes an archive to your web servers, using the function `do_deploy`:
+
+- Prototype: def `do_deploy(archive_path)`:
+- Returns `False` if the file at the path `archive_path` doesn’t exist
+- The script should take the following steps:
+    - Upload the archive to the `/tmp/` directory of the web server
+    - Uncompress the archive to the folder `/data/web_static/releases/<archive filename without extension>` on the web server
+    - Delete the archive from the web server
+    - Delete the symbolic link `/data/web_static/current` from the web server
+    - Create a new the symbolic link `/data/web_static/current` on the web server, linked to the new version of your code (`/data/web_static/releases/<archive filename without extension>`)
+- All remote commands must be executed on your both web servers (using `env.hosts = ['<IP web-01>', 'IP web-02']` variable in your script)
+- Returns True if all operations have been done correctly, otherwise returns `False`
+- You must use this script to deploy it on your servers: `xx-web-01` and `xx-web-02`
+
+In the following example, the SSH key and the username used for accessing to the server are passed in the command line. Of course, you could define them as Fabric environment variables (ex: `env.user =`...)
+
+Disclaimer: commands execute by Fabric displayed below are linked to the way we implemented the archive function `do_pack` - like the mv command - depending of your implementation of it, you may don’t need it
+
+
+Manually created required files:
+```sh
+
+(venv) stevecmd@DESKTOP-UTB295U:~/ALX/AirBnB_clone_v2$ ls -l versions/web_static_20170314233357.tgz
+ls: cannot access 'versions/web_static_20170314233357.tgz': No such file or directory
+(venv) stevecmd@DESKTOP-UTB295U:~/ALX/AirBnB_clone_v2$ cd web_static
+(venv) stevecmd@DESKTOP-UTB295U:~/ALX/AirBnB_clone_v2/web_static$ touch .DS_Store 0-index.html 1-index.html 100-index.html 2-index.html 3-index.html 4-index.html 5-index.html 6-index.html 7-index.html 8-index.html index.html
+(venv) stevecmd@DESKTOP-UTB295U:~/ALX/AirBnB_clone_v2/web_static$ mkdir -p images styles
+(venv) stevecmd@DESKTOP-UTB295U:~/ALX/AirBnB_clone_v2/web_static$ touch images/icon.png images/icon_bath.png images/icon_bed.png images/icon_group.png images/icon_pets.png images/icon_tv.png images/icon_wifi.png images/logo.png
+(venv) stevecmd@DESKTOP-UTB295U:~/ALX/AirBnB_clone_v2/web_static$ touch styles/100-places.css styles/2-common.css styles/2-footer.css styles/2-header.css styles/3-common.css styles/3-footer.css styles/3-header.css styles/4-common.css styles/4-filters.css styles/5-filters.css styles/6-filters.css styles/7-places.css styles/8-places.css styles/common.css styles/filters.css styles/footer.css styles/header.css styles/places.css
+
+```
+> Command to use Fabric to distribute archive to my containers using my key
+```sh
+(venv) stevecmd@DESKTOP-UTB295U:~/ALX/AirBnB_clone_v2$ fab -f 2-do_deploy_web_static.py do_deploy:archive_path=versions/web_static_20240711092054.tgz -i ~/.ssh/id_ed25519
+```
+File: `2-do_deploy_web_static.py`
+
+5. Full Deployment
+
+Write a Fabric script (based on the file `2-do_deploy_web_static.py`) that creates and distributes an archive to your web servers, using the function `deploy`:
+
+- Prototype: `def deploy()`:
+- The script should take the following steps:
+    - Call the `do_pack()` function and store the path of the created archive
+    - Return `False` if no archive has been created
+    - Call the `do_deploy(archive_path)` function, using the new path of the new archive
+    - Return the return value of `do_deploy`
+- All remote commands must be executed on both of web your servers (using `env.hosts = ['<IP web-01>', 'IP web-02']` variable in your script)
+- You must use this script to deploy it on your servers: `xx-web-01` and `xx-web-02`
+
+```sh
+
+(venv) stevecmd@DESKTOP-UTB295U:~/ALX/AirBnB_clone_v2$ fab -f 3-deploy_web_static.py deploy -i ~/.ssh/id_ed25519 -u ubuntu
+[54.160.94.43] Executing task 'deploy'
+[localhost] local: mkdir -p versions
+[localhost] local: tar -cvzf versions/web_static_20240711100116.tgz web_static
+web_static/
+web_static/5-index.html
+web_static/README.md
+web_static/102-index.html
+web_static/versions/
+web_static/versions/web_static_20240711092047.tgz
+web_static/6-index.html
+web_static/2-index.html
+web_static/8-index.html
+web_static/index.html
+web_static/1-index.html
+web_static/.DS_Store
+web_static/103-index.html
+web_static/4-index.html
+web_static/7-index.html
+web_static/101-index.html
+web_static/3-index.html
+web_static/images/
+web_static/images/logo.png
+web_static/images/icon_bath.png
+web_static/images/icon_bed.png
+web_static/images/icon.png
+web_static/images/icon_pets.png
+web_static/images/icon_group.png
+web_static/images/icon.ico
+web_static/images/icon_tv.png
+web_static/images/icon_wifi.png
+web_static/styles/
+web_static/styles/header.css
+web_static/styles/103-common.css
+web_static/styles/103-header.css
+web_static/styles/102-header.css
+web_static/styles/3-header.css
+web_static/styles/103-places.css
+web_static/styles/102-filters.css
+web_static/styles/101-places.css
+web_static/styles/7-places.css
+web_static/styles/2-header.css
+web_static/styles/4-common.css
+web_static/styles/103-footer.css
+web_static/styles/places.css
+web_static/styles/4-filters.css
+web_static/styles/102-places.css
+web_static/styles/5-filters.css
+web_static/styles/102-footer.css
+web_static/styles/filters.css
+web_static/styles/8-places.css
+web_static/styles/footer.css
+web_static/styles/3-footer.css
+web_static/styles/2-common.css
+web_static/styles/103-filters.css
+web_static/styles/6-filters.css
+web_static/styles/102-common.css
+web_static/styles/common.css
+web_static/styles/2-footer.css
+web_static/styles/100-places.css
+web_static/styles/3-common.css
+web_static/0-index.html
+web_static/100-index.html
+[54.160.94.43] put: versions/web_static_20240711100116.tgz -> /tmp/web_static_20240711100116.tgz
+[54.160.94.43] run: mkdir -p /data/web_static/releases/web_static_20240711100116/
+[54.160.94.43] run: tar -xzf /tmp/web_static_20240711100116.tgz -C /data/web_static/releases/web_static_20240711100116/
+[54.160.94.43] run: rm /tmp/web_static_20240711100116.tgz
+[54.160.94.43] run: mv /data/web_static/releases/web_static_20240711100116/web_static/* /data/web_static/releases/web_static_20240711100116/
+[54.160.94.43] run: rm -rf /data/web_static/releases/web_static_20240711100116/web_static
+[54.160.94.43] run: rm -rf /data/web_static/current
+[54.160.94.43] run: ln -s /data/web_static/releases/web_static_20240711100116/ /data/web_static/current
+[34.203.38.175] Executing task 'deploy'
+[localhost] local: mkdir -p versions
+[localhost] local: tar -cvzf versions/web_static_20240711100130.tgz web_static
+web_static/
+web_static/5-index.html
+web_static/README.md
+web_static/102-index.html
+web_static/versions/
+web_static/versions/web_static_20240711092047.tgz
+web_static/6-index.html
+web_static/2-index.html
+web_static/8-index.html
+web_static/index.html
+web_static/1-index.html
+web_static/.DS_Store
+web_static/103-index.html
+web_static/4-index.html
+web_static/7-index.html
+web_static/101-index.html
+web_static/3-index.html
+web_static/images/
+web_static/images/logo.png
+web_static/images/icon_bath.png
+web_static/images/icon_bed.png
+web_static/images/icon.png
+web_static/images/icon_pets.png
+web_static/images/icon_group.png
+web_static/images/icon.ico
+web_static/images/icon_tv.png
+web_static/images/icon_wifi.png
+web_static/styles/
+web_static/styles/header.css
+web_static/styles/103-common.css
+web_static/styles/103-header.css
+web_static/styles/102-header.css
+web_static/styles/3-header.css
+web_static/styles/103-places.css
+web_static/styles/102-filters.css
+web_static/styles/101-places.css
+web_static/styles/7-places.css
+web_static/styles/2-header.css
+web_static/styles/4-common.css
+web_static/styles/103-footer.css
+web_static/styles/places.css
+web_static/styles/4-filters.css
+web_static/styles/102-places.css
+web_static/styles/5-filters.css
+web_static/styles/102-footer.css
+web_static/styles/filters.css
+web_static/styles/8-places.css
+web_static/styles/footer.css
+web_static/styles/3-footer.css
+web_static/styles/2-common.css
+web_static/styles/103-filters.css
+web_static/styles/6-filters.css
+web_static/styles/102-common.css
+web_static/styles/common.css
+web_static/styles/2-footer.css
+web_static/styles/100-places.css
+web_static/styles/3-common.css
+web_static/0-index.html
+web_static/100-index.html
+[34.203.38.175] put: versions/web_static_20240711100130.tgz -> /tmp/web_static_20240711100130.tgz
+[34.203.38.175] run: mkdir -p /data/web_static/releases/web_static_20240711100130/
+[34.203.38.175] run: tar -xzf /tmp/web_static_20240711100130.tgz -C /data/web_static/releases/web_static_20240711100130/
+[34.203.38.175] run: rm /tmp/web_static_20240711100130.tgz
+[34.203.38.175] run: mv /data/web_static/releases/web_static_20240711100130/web_static/* /data/web_static/releases/web_static_20240711100130/
+[34.203.38.175] run: rm -rf /data/web_static/releases/web_static_20240711100130/web_static
+[34.203.38.175] run: rm -rf /data/web_static/current
+[34.203.38.175] run: ln -s /data/web_static/releases/web_static_20240711100130/ /data/web_static/current
+
+Done.
+Disconnecting from 54.160.94.43... done.
+Disconnecting from 34.203.38.175... done.
+
+```
+
+Keep it clean!
+Write a Fabric script (based on the file `3-deploy_web_static.py`) that deletes out-of-date archives, using the function `do_clean`:
+
+- Prototype: `def do_clean(number=0)`:
+- `number` is the number of the archives, including the most recent, to keep.
+    - If `number` is 0 or 1, keep only the most recent version of your archive.
+    - if `number` is 2, keep the most recent, and second most recent versions of your archive.
+        etc.
+- Your script should:
+    - Delete all unnecessary archives (all archives minus the number to keep) in the `versions` folder
+    - Delete all unnecessary archives (all archives minus the number to keep) in the `/data/web_static/releases` folder of both of your web servers
+- All remote commands must be executed on both of your web servers (using the `env.hosts = ['<IP web-01>', 'IP web-02'`] variable in your script)
+
+```sh
+
+(venv) stevecmd@DESKTOP-UTB295U:~/ALX/AirBnB_clone_v2$ ls -ltr versions
+total 72
+-rw-r--r-- 1 stevecmd stevecmd 21382 Jul 11 09:20 web_static_20240711092054.tgz
+-rw-r--r-- 1 stevecmd stevecmd 21382 Jul 11 10:01 web_static_20240711100116.tgz
+-rw-r--r-- 1 stevecmd stevecmd 21382 Jul 11 10:01 web_static_20240711100130.tgz
+(venv) stevecmd@DESKTOP-UTB295U:~/ALX/AirBnB_clone_v2$ fab -f 100-clean_web_static.py do_clean:number=2 -i ~/.ssh/id_ed25519 -u ubuntu > /dev/null 2>&1
+(venv) stevecmd@DESKTOP-UTB295U:~/ALX/AirBnB_clone_v2$ ls -ltr versions
+total 48
+-rw-r--r-- 1 stevecmd stevecmd 21382 Jul 11 10:01 web_static_20240711100116.tgz
+-rw-r--r-- 1 stevecmd stevecmd 21382 Jul 11 10:01 web_static_20240711100130.tgz
+
+```
+File: `100-clean_web_static.py`
