@@ -22,9 +22,12 @@ def do_pack():
     timestamp = now.strftime("%Y%m%d%H%M%S")
     archive_path = "versions/web_static_{}.tgz".format(timestamp)
 
+    print("Packing web_static to {}".format(archive_path))
+
     try:
         local("tar -cvzf {} web_static".format(archive_path))
-        print("web_static packed: {} -> {} Bytes".format(archive_path, os.path.getsize(archive_path)))
+        size = os.path.getsize(archive_path)
+        print("web_static packed: {} -> {}Bytes".format(archive_path, size))
         return archive_path
     except Exception as e:
         print("Error packing web_static:", str(e))
