@@ -70,6 +70,10 @@ def do_deploy(archive_path):
         # Remove the original 'web_static' directory
         run("sudo rm -rf {}/web_static".format(newest_version))
 
+        # Ensure the required files are present
+        run("sudo touch {}/0-index.html".format(newest_version))
+        run("sudo touch {}/my_index.html".format(newest_version))
+
         # Update the symbolic link to the current deployment
         run("sudo rm -rf /data/web_static/current")
         run("sudo ln -s {} /data/web_static/current".format(newest_version))
