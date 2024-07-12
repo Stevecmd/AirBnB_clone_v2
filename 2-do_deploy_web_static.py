@@ -63,9 +63,8 @@ def do_deploy(archive_path):
         # Remove the uploaded archive from /tmp/
         run("sudo rm {}".format(archived_file))
 
-        # Move contents to the proper location
-        run("sudo mv {}/web_static/* {}"
-            .format(newest_version, newest_version))
+        # Move contents to the proper location using rsync
+        run("sudo rsync -a {}/web_static/ {}/".format(newest_version, newest_version))
 
         # Remove the original 'web_static' directory
         run("sudo rm -rf {}/web_static".format(newest_version))
@@ -77,6 +76,26 @@ def do_deploy(archive_path):
         # Update the symbolic link to the current deployment
         run("sudo rm -rf /data/web_static/current")
         run("sudo ln -s {} /data/web_static/current".format(newest_version))
+
+        # Update Nginx configuration to point to the new deployment directory
+        nginx_config = """
+        server {
+            listen 80;
+            server_name _;
+
+            location / {
+                alias /data/web_static/current/;
+                index 0-index.html;
+            }
+        }
+        """
+        run(
+            "echo '{}' | sudo tee /etc/nginx/sites-available/default"
+            .format(nginx_config)
+        )
+
+        # Reload Nginx to apply the new configuration
+        run("sudo service nginx reload")
 
         print("New version deployed!")
         return True
