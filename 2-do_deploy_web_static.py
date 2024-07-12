@@ -47,7 +47,7 @@ def do_deploy(archive_path):
 
     try:
         # Extract file name from path
-        archived_file = archive_path[9:]
+        archived_file = archive_path.split("/")[-1]
         newest_version = "/data/web_static/releases/" + archived_file[:-4]
         archived_file = "/tmp/" + archived_file
 
@@ -64,14 +64,14 @@ def do_deploy(archive_path):
         run("sudo rm {}".format(archived_file))
 
         # Move contents to the proper location using rsync
-        run("sudo rsync -a {}/web_static/ {}/".format(newest_version, newest_version))
+        run(
+            "sudo rsync -a {}/web_static/ {}/".format(
+                newest_version, newest_version
+            )
+        )
 
         # Remove the original 'web_static' directory
         run("sudo rm -rf {}/web_static".format(newest_version))
-
-        # Ensure the required files are present
-        run("sudo touch {}/0-index.html".format(newest_version))
-        run("sudo touch {}/my_index.html".format(newest_version))
 
         # Update the symbolic link to the current deployment
         run("sudo rm -rf /data/web_static/current")
@@ -92,6 +92,12 @@ def do_deploy(archive_path):
         run(
             "echo '{}' | sudo tee /etc/nginx/sites-available/default"
             .format(nginx_config)
+        )
+
+        # Enable the new configuration by creating a symbolic link
+        run(
+            "sudo ln -sf /etc/nginx/sites-available/default "
+            "/etc/nginx/sites-enabled/"
         )
 
         # Reload Nginx to apply the new configuration
