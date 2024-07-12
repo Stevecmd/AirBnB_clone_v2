@@ -155,6 +155,8 @@ source venv/bin/activate
 ```sh
 deactivate
 ```
+Install Fabric:
+`sudo apt install fabric`
 
 > Install Environment dependencies
 ```sh
@@ -525,3 +527,21 @@ ubuntu@197045-web-02:~$ curl localhost/hbnb_static/index.html
 
 ```
 File: `101-setup_web_static.pp`
+
+`fab -f 2-do_deploy_web_static.py do_deploy:archive_path=versions/web_static_20170315003959.tgz -i ~/.ssh/id_ed25519 -u ubuntu`
+
+
+
+Keys
+View SSH Private Key:
+```sh
+cat ~/.ssh/id_rsa
+```
+View SSH Public key:
+```sh
+cat ~/.ssh/id_rsa.pub
+```
+View SSH configuration key:
+```sh
+cat ~/.ssh/config
+```
