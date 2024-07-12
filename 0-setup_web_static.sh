@@ -59,9 +59,9 @@ set_ownership() {
 update_nginx_config() {
     # Check if the alias already exists in the Nginx configuration
     if ! grep -q "location /hbnb_static" /etc/nginx/sites-available/default; then
-        sudo sed -i '/server_name _;/a \ \n\tlocation /hbnb_static {\n\t\talias /data/web_static/current/;\n\t}\n' /etc/nginx/sites-available/default
-        sudo systemctl restart nginx
+        sudo sed -i '/server_name _;/a \\n\tlocation /hbnb_static {\n\t\talias /data/web_static/current/;\n\t}\n' /etc/nginx/sites-available/default
     fi
+    sudo service nginx restart
 }
 
 # Main script execution
