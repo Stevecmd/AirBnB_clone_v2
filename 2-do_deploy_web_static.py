@@ -4,12 +4,14 @@ Fabric script to distribute an archive to web servers
 """
 
 from datetime import datetime
-from fabric.api import *
+from os.path import exists
+from fabric.api import put, run, env, local
 import os
 
 env.hosts = ['54.160.94.43', '34.203.38.175']
 env.user = "ubuntu"
 env.key_filename = "~/.ssh/id_ed25519"
+env.timeout = 60  # Increase timeout to 60 seconds
 
 
 def do_pack():
@@ -20,7 +22,7 @@ def do_pack():
         str: The archive path if the archive has been correctly generated.
         None: If the archive was not generated.
     """
-    local("mkdir -p versions")
+    local("sudo mkdir -p versions")
     date = datetime.now().strftime("%Y%m%d%H%M%S")
     archived_f_path = "versions/web_static_{}.tgz".format(date)
     t_gzip_archive = local("tar -cvzf {} web_static".format(archived_f_path))
@@ -41,41 +43,20 @@ def do_deploy(archive_path):
     Returns:
         bool: True if deployment was successful, False otherwise.
     """
-    if not os.path.exists(archive_path):
-        print(f"Error: Archive '{archive_path}' not found.")
+    if exists(archive_path) is False:
         return False
-
     try:
-        # Extract file name from path
-        archived_file = archive_path.split("/")[-1]
-        newest_version = "/data/web_static/releases/" + archived_file[:-4]
-        archived_file = "/tmp/" + archived_file
-
-        # Upload archive to /tmp/ directory on remote servers
+        file_n = archive_path.split("/")[-1]
+        no_ext = file_n.split(".")[0]
+        path = "/data/web_static/releases/"
         put(archive_path, '/tmp/')
-
-        # Create directory structure for deployment
-        run("sudo mkdir -p {}".format(newest_version))
-
-        # Extract archive into the specified directory
-        run("sudo tar -xzf {} -C {}/".format(archived_file, newest_version))
-
-        # Remove the uploaded archive from /tmp/
-        run("sudo rm {}".format(archived_file))
-
-        # Move contents to the proper location using rsync
-        run(
-            "sudo rsync -a {}/web_static/ {}/".format(
-                newest_version, newest_version
-            )
-        )
-
-        # Remove the original 'web_static' directory
-        run("sudo rm -rf {}/web_static".format(newest_version))
-
-        # Update the symbolic link to the current deployment
-        run("sudo rm -rf /data/web_static/current")
-        run("sudo ln -s {} /data/web_static/current".format(newest_version))
+        run('sudo mkdir -p {}{}/'.format(path, no_ext))
+        run('sudo tar -xzf /tmp/{} -C {}{}/'.format(file_n, path, no_ext))
+        run('sudo rm /tmp/{}'.format(file_n))
+        run('sudo rsync -a {0}{1}/web_static/ {0}{1}/'.format(path, no_ext))
+        run('sudo rm -rf {}{}/web_static'.format(path, no_ext))
+        run('sudo rm -rf /data/web_static/current')
+        run('sudo ln -s {}{}/ /data/web_static/current'.format(path, no_ext))
 
         # Update Nginx configuration to point to the new deployment directory
         nginx_config = """
@@ -105,7 +86,6 @@ def do_deploy(archive_path):
 
         print("New version deployed!")
         return True
-
     except Exception as e:
         print(f"Error deploying: {str(e)}")
         return False
