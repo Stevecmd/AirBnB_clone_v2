@@ -5,7 +5,7 @@ Fabric script to distribute an archive to web servers
 
 from datetime import datetime
 from os.path import exists
-from fabric.api import put, run, env, local
+from fabric.api import put, run, env, local, lcd, cd
 import os
 
 env.hosts = ['54.160.94.43', '34.203.38.175']
@@ -57,35 +57,32 @@ def do_deploy(archive_path):
         run('sudo rm -rf {}{}/web_static'.format(path, no_ext))
         run('sudo rm -rf /data/web_static/current')
         run('sudo ln -s {}{}/ /data/web_static/current'.format(path, no_ext))
-
-        # Update Nginx configuration to point to the new deployment directory
-        nginx_config = """
-        server {
-            listen 80;
-            server_name _;
-
-            location / {
-                alias /data/web_static/current/;
-                index 0-index.html;
-            }
-        }
-        """
-        run(
-            "echo '{}' | sudo tee /etc/nginx/sites-available/default"
-            .format(nginx_config)
-        )
-
-        # Enable the new configuration by creating a symbolic link
-        run(
-            "sudo ln -sf /etc/nginx/sites-available/default "
-            "/etc/nginx/sites-enabled/"
-        )
-
-        # Reload Nginx to apply the new configuration
         run("sudo service nginx reload")
-
         print("New version deployed!")
         return True
     except Exception as e:
         print(f"Error deploying: {str(e)}")
         return False
+
+
+def do_clean(number=0):
+    """
+    Deletes out-of-date archives.
+
+    Args:
+        number (int): The number of archives to keep.
+    """
+    number = int(number)
+    if number == 0:
+        number = 1
+
+    archives = sorted(os.listdir("versions"))
+    [archives.pop() for i in range(number)]
+    with lcd("versions"):
+        [local("rm ./{}".format(a)) for a in archives]
+
+    with cd("/data/web_static/releases"):
+        archives = run("ls -tr").split()
+        archives = [a for a in archives if "web_static_" in a]
+        [archives.pop() for i in range(number)]
+        [run("rm -rf ./{}".format(a)) for a in archives]
