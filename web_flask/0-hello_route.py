@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 
 @app.route('/', strict_slashes=False)
-def hello_hbnb():
+def home():
     """Returns a string 'Hello HBNB!'"""
     return 'Hello HBNB!'
 
