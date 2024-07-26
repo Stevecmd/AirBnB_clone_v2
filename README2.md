@@ -10,3 +10,5 @@
 Install requirements:
 `pip3 install Flask`
 
+Sample use of validator:
+`(myvenv) stevecmd@DESKTOP-UTB295U:~/ALX/AirBnB_clone_v2$ python3 w3c_validator.py web_flask/templates/*.html`
