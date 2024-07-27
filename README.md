@@ -145,11 +145,11 @@ Usage: <class_name>.update(<_id>, <dictionary>)
 ### Activate a Virtual environment
 1. Create a Virtual Environment:
 ```sh
-python3 -m venv venv
+python3 -m venv myvenv
 ```
 2. Activate the Virtual Environment:
 ```sh
-source venv/bin/activate
+source myvenv/bin/activate
 ```
 3. Deactivate the Virtual Environment:
 ```sh
@@ -544,4 +544,9 @@ cat ~/.ssh/id_rsa.pub
 View SSH configuration key:
 ```sh
 cat ~/.ssh/config
+```
+
+Install requirements:
+```sh
+pip install -r requirements.txt
 ```

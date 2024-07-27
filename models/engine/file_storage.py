@@ -46,7 +46,7 @@ class FileStorage:
             'Review': Review
         }
         try:
-            with open(self.__file_path, 'r') as f:
+            with open(self.__file_path, 'r', encoding="utf-8") as f:
                 temp = json.load(f)
                 for key, val in temp.items():
                     cls_name = val['__class__']
