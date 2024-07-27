@@ -1,0 +1,57 @@
+<!DOCTYPE HTML>
+<HTML lang="en">
+<HEAD>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HBNB</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/3-header.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/3-footer.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/4-common.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/6-filters.css') }}">
+</HEAD>
+<BODY>
+    <HEADER>
+        <DIV class="container">
+            <DIV class="logo">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="HBNB logo">
+            </DIV>
+            <DIV class="title">
+                <H1>HBNB</H1>
+            </DIV>
+        </DIV>
+    </HEADER>
+    <DIV class="filters">
+        <DIV class="container">
+            <DIV class="filters_box">
+                <H3>States</H3>
+                <H4>&nbsp;</H4>
+                <ul>
+                    {% for state in states %}
+                        <li>{{ state.name }}
+                            <ul>
+                                {% for city in state.cities %}
+                                    <li>{{ city.name }}</li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </DIV>
+            <DIV class="filters_box">
+                <H3>Amenities</H3>
+                <H4>&nbsp;</H4>
+                <ul>
+                    {% for amenity in amenities %}
+                        <LI>{{ amenity.name }}</LI>
+                    {% endfor %}
+                </ul>
+            </DIV>
+        </DIV>
+    </DIV>
+    <footer>
+        <DIV class="container">
+            <p>&copy; Holberton School</p>
+        </DIV>
+    </footer>
+</BODY>
+</HTML>
