@@ -7,3 +7,4 @@ models/engine/__pycache__/
 *.pyc
 *.tgz
 myvenv/
+check-docs.py
