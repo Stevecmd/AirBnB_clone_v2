@@ -20,21 +20,25 @@ class test_basemodel(unittest.TestCase):
 
     def setUp(self):
         """Set up method for tests"""
-        if models.storage_t == 'db':
+        from models import storage
+        
+        if hasattr(storage, 'storage_t') and storage.storage_t == 'db':
             from sqlalchemy import create_engine
             from sqlalchemy.orm import scoped_session, sessionmaker
 
             self.engine = create_engine('sqlite:///:memory:', echo=False)
             self.Session = scoped_session(sessionmaker(bind=self.engine))
             Base.metadata.create_all(self.engine)
-            models.storage._DBStorage__session = self.Session
+            storage._DBStorage__session = self.Session
 
     def tearDown(self):
         """Tear down method for tests"""
-        if models.storage_t == 'db':
+        from models import storage
+        
+        if hasattr(storage, 'storage_t') and storage.storage_t == 'db':
             Base.metadata.drop_all(self.engine)
-            models.storage._DBStorage__session.remove()
-            models.storage._DBStorage__session = None
+            storage._DBStorage__session.remove()
+            storage._DBStorage__session = None
         try:
             os.remove('file.json')
         except FileNotFoundError:
@@ -79,6 +83,27 @@ class test_basemodel(unittest.TestCase):
         i = self.value()
         self.assertEqual(str(i), '[{}] ({}) {}'.format(self.name, i.id,
                          i.__dict__))
+
+    def test_key_format(self):
+        """ Key is properly formatted """
+        # Create and add a new BaseModel object to the storage
+        new = BaseModel()
+        storage.new(new)
+        storage.save()
+        
+        _id = new.to_dict()['id']
+        
+        # Retrieve all keys from the storage
+        keys = list(storage.all().keys())
+        
+        # Ensure that at least one key exists in storage
+        self.assertGreater(len(keys), 0, "No keys found in storage")
+        
+        # Check the format of the first key
+        temp = keys[0]
+        expected_key = 'BaseModel' + '.' + _id
+        self.assertEqual(temp, expected_key)
+
 
     def test_todict(self):
         """ """
