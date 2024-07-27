@@ -38,3 +38,8 @@ class User(BaseModel, Base):
     def __init__(self, *args, **kwargs):
         """initializes user"""
         super().__init__(*args, **kwargs)
+        if storage_type != 'db':
+            self.email = kwargs.get('email', '')
+            self.password = kwargs.get('password', '')
+            self.first_name = kwargs.get('first_name', '')
+            self.last_name = kwargs.get('last_name', '')
