@@ -9,12 +9,14 @@
 
 <BODY>
     <H1>States</H1>
+
     <UL>
-        {% for state in states.values()|sort(attribute="name") %}
-        <LI>{{state.id}}: <B>{{state.name}}</B>
-        </LI>
-        {% endfor %}
+      <LI style="list-style: none">{% for state in states.values()|sort(attribute="name")
+      %}</LI>
+  
+      <LI>{{state.id}}: <b>{{state.name}}</b></LI>
+  
+      <LI style="list-style: none">{% endfor %}</LI>
     </UL>
 </BODY>
-
 </HTML>

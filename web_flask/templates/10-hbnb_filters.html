@@ -25,24 +25,24 @@
                 <H3>States</H3>
                 <H4>&nbsp;</H4>
                 <ul>
-                    {% for state in states %}
-                        <li>{{ state.name }}
+                    <LI style="list-style: none">{% for state in states %}</LI>
+                        <LI>{{ state.name }}
                             <ul>
-                                {% for city in state.cities %}
-                                    <li>{{ city.name }}</li>
-                                {% endfor %}
+                                <LI style="list-style: none">{% for city in state.cities %}</LI>
+                                    <LI>{{ city.name }}</LI>
+                                    <LI style="list-style: none">{% endfor %}</LI>
                             </ul>
-                        </li>
-                    {% endfor %}
+                        </LI>
+                        <LI style="list-style: none">{% endfor %}</LI>
                 </ul>
             </DIV>
             <DIV class="filters_box">
                 <H3>Amenities</H3>
                 <H4>&nbsp;</H4>
                 <ul>
-                    {% for amenity in amenities %}
+                    <LI style="list-style: none">{% for amenity in amenities %}</LI>
                         <LI>{{ amenity.name }}</LI>
-                    {% endfor %}
+                        <LI style="list-style: none">{% endfor %}</LI>
                 </ul>
             </DIV>
         </DIV>

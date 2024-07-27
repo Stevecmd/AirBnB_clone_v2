@@ -550,3 +550,6 @@ Install requirements:
 ```sh
 pip install -r requirements.txt
 ```
+
+Online `HTML validator`:
+`https://infohound.net/tidy/`

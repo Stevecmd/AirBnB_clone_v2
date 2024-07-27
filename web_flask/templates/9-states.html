@@ -7,20 +7,21 @@
         {% if id == None %}
         <H1>States</H1>
         <UL>
-            {% for state in states|sort(attribute="name") %}
-            <LI>{{ state.id }}: <B>{{ state.name }}</B></LI>
-            {% endfor %}
-        </UL>
-        {% elif states != None and id != None %}
+            <LI style="list-style: none">{% for state in states|sort(attribute="name") %}</LI>
+            <LI>{{ state.id }}: <b>{{ state.name }}</b></LI>
+            <LI style="list-style: none">{% endfor %}</LI>
+        </UL>{% elif states != None and id != None %}
         <H1>State: {{ states.name }}</H1>
-        <H3>Cities:</H3>
-        <UL>
-            {% for city in states.cities|sort(attribute="name") %}
-            <LI>{{ city.id }}: <B>{{ city.name }}</B></LI>
-            {% endfor %}
-        </UL>
-        {% else %}
-        <H1>Not found!</H1>
-        {% endif %}
+        <h3>Cities:</h3>
+
+        <ul>
+          <LI style="list-style: none">{% for city in states.cities|sort(attribute="name")
+          %}</LI>
+      
+          <LI>{{ city.id }}: <b>{{ city.name }}</b></LI>
+      
+          <LI style="list-style: none">{% endfor %}</LI>
+        </ul>{% else %}
+        <h1>Not found!</h1>{% endif %}
     </BODY>
 </HTML>
