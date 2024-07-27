@@ -12,8 +12,8 @@ storage_type = getenv('HBNB_TYPE_STORAGE')
 
 class Amenity(BaseModel, Base):
     """Representation of Amenity """
+    __tablename__ = 'amenities'
     if storage_type == 'db':
-        __tablename__ = 'amenities'
         name = Column(String(128), nullable=False)
     else:
         name = ""
@@ -21,3 +21,5 @@ class Amenity(BaseModel, Base):
     def __init__(self, *args, **kwargs):
         """initializes Amenity"""
         super().__init__(*args, **kwargs)
+        if storage_type != 'db':
+            self.name = kwargs.get('name', "")
