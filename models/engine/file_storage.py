@@ -47,11 +47,16 @@ class FileStorage:
         }
         try:
             with open(self.__file_path, 'r', encoding="utf-8") as f:
-                temp = json.load(f)
-                for key, val in temp.items():
-                    cls_name = val['__class__']
-                    self.__objects[key] = classes[cls_name](**val)
+                try:
+                    temp = json.load(f)
+                    for key, val in temp.items():
+                        cls_name = val['__class__']
+                        self.__objects[key] = classes[cls_name](**val)
+                except json.JSONDecodeError:
+                    # Handle the case where the file is empty or invalid JSON
+                    pass
         except FileNotFoundError:
+            # File does not exist, nothing to load
             pass
 
     def delete(self, obj=None):

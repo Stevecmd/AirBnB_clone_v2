@@ -31,9 +31,9 @@ class test_fileStorage(unittest.TestCase):
     def test_new(self):
         """ New object is correctly added to __objects """
         new = BaseModel()
-        for obj in storage.all().values():
-            temp = obj
-        self.assertTrue(temp is obj)
+        storage.new(new)
+        obj = list(storage.all().values())[0]
+        self.assertTrue(obj is new)
 
     def test_all(self):
         """ __objects is properly returned """
@@ -65,9 +65,17 @@ class test_fileStorage(unittest.TestCase):
         new = BaseModel()
         storage.save()
         storage.reload()
+        
+        # Retrieve the newly loaded object from storage
+        loaded = None
         for obj in storage.all().values():
             loaded = obj
-        self.assertEqual(new.to_dict()['id'], loaded.to_dict()['id'])
+
+        # Check if an object was loaded and compare IDs
+        if loaded:
+            self.assertEqual(new.to_dict()['id'], loaded.to_dict()['id'])
+        else:
+            self.fail("No objects were loaded")
 
     def test_reload_empty(self):
         """ Load from an empty file """
@@ -78,7 +86,10 @@ class test_fileStorage(unittest.TestCase):
 
     def test_reload_from_nonexistent(self):
         """ Nothing happens if file does not exist """
-        self.assertEqual(storage.reload(), None)
+        if os.path.exists('file.json'):
+            os.remove('file.json')
+        storage.reload()
+        self.assertEqual(storage.all(), {})
 
     def test_base_model_save(self):
         """ BaseModel save method calls storage save """
