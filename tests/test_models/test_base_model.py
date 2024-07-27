@@ -20,27 +20,6 @@ class TestBaseModel(unittest.TestCase):
     def setUp(self):
         """Set up for the tests"""
         pass
-        # self.value = BaseModel
-
-        # if hasattr(storage, 'storage_t') and storage.storage_t == 'db':
-        #     from sqlalchemy import create_engine
-        #     from sqlalchemy.orm import scoped_session, sessionmaker
-
-        #     self.engine = create_engine('sqlite:///:memory:', echo=False)
-        #     self.Session = scoped_session(sessionmaker(bind=self.engine))
-        #     Base.metadata.create_all(self.engine)
-        #     storage._DBStorage__session = self.Session
-
-    # def tearDown(self):
-    #     """Tear down method for tests"""
-    #     if hasattr(storage, 'storage_t') and storage.storage_t == 'db':
-    #         Base.metadata.drop_all(self.engine)
-    #         storage._DBStorage__session.remove()
-    #         storage._DBStorage__session = None
-    #     try:
-    #         os.remove('file.json')
-    #     except FileNotFoundError:
-    #         pass
 
     def tearDown(self):
         """Tear down method for tests"""
@@ -77,17 +56,6 @@ class TestBaseModel(unittest.TestCase):
         with open('file.json', 'r') as f:
             j = json.load(f)
             self.assertEqual(j[key], i.to_dict())
-
-    # def test_str(self):
-    #     """Test string representation"""
-    #     i = self.value()
-    #     self.assertEqual(
-    #         str(i),
-    #         '[{}] ({}) {}'.format(
-    #             i.__class__.__name__,
-    #             i.id, i.__dict__
-    #         )
-    #     )
 
     def test_str(self):
         """Test string representation"""

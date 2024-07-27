@@ -1,6 +1,6 @@
 #!/usr/bin/python3
-
 """ holds User class """
+
 import models
 from models.base_model import BaseModel, Base
 from os import getenv

@@ -47,7 +47,11 @@ class TestDBStorage(unittest.TestCase):
         """Test that db_storage.py follows PEP8"""
         pep8style = pep8.StyleGuide(quiet=True)
         result = pep8style.check_files(['models/engine/db_storage.py'])
-        self.assertEqual(result.total_errors, 0, "Found code style errors (and warnings).")
+        self.assertEqual(
+            result.total_errors,
+            0,
+            "Found code style errors (and warnings)."
+        )
 
     def test_all_returns_dict(self):
         """Test that all returns a dictionary"""
