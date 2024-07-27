@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """ """
 from models.base_model import BaseModel
+from models import storage
 import unittest
 import datetime
 from uuid import UUID
@@ -19,8 +20,8 @@ class test_basemodel(unittest.TestCase):
         self.value = BaseModel
 
     def setUp(self):
-        """Set up method for tests"""
-        from models import storage
+        """Set up for the tests"""
+        self.value = BaseModel
         
         if hasattr(storage, 'storage_t') and storage.storage_t == 'db':
             from sqlalchemy import create_engine
@@ -69,7 +70,8 @@ class test_basemodel(unittest.TestCase):
         i = self.value()
         i.save()
         key = self.name + "." + i.id
-        if models.storage_t == 'file':
+        storage_type = os.getenv('HBNB_TYPE_STORAGE')
+        if storage_type == 'file':
             with open('file.json', 'r') as f:
                 j = json.load(f)
                 self.assertEqual(j[key], i.to_dict())
@@ -78,11 +80,11 @@ class test_basemodel(unittest.TestCase):
             db_obj = db_session.query(BaseModel).filter_by(id=i.id).first()
             self.assertIsNotNone(db_obj)
 
+
     def test_str(self):
         """ """
         i = self.value()
-        self.assertEqual(str(i), '[{}] ({}) {}'.format(self.name, i.id,
-                         i.__dict__))
+        self.assertEqual(str(i), '[{}] ({}) {}'.format(i.__class__.__name__, i.id, i.__dict__))
 
     def test_key_format(self):
         """ Key is properly formatted """
@@ -90,19 +92,21 @@ class test_basemodel(unittest.TestCase):
         new = BaseModel()
         storage.new(new)
         storage.save()
-        
+
+        # Retrieve the ID from the newly created object
         _id = new.to_dict()['id']
-        
+
         # Retrieve all keys from the storage
         keys = list(storage.all().keys())
-        
+
         # Ensure that at least one key exists in storage
         self.assertGreater(len(keys), 0, "No keys found in storage")
-        
+
         # Check the format of the first key
         temp = keys[0]
         expected_key = 'BaseModel' + '.' + _id
         self.assertEqual(temp, expected_key)
+
 
 
     def test_todict(self):
@@ -119,7 +123,7 @@ class test_basemodel(unittest.TestCase):
 
     def test_kwargs_one(self):
         """ """
-        n = {'Name': 'test'}
+        n = {'name': 'test'}
         with self.assertRaises(KeyError):
             new = self.value(**n)
 
