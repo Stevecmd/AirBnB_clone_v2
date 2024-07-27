@@ -11,10 +11,12 @@ from models.place import Place
 
 app = Flask(__name__)
 
+
 @app.teardown_appcontext
 def teardown_db(exception):
     """Closes the storage on teardown"""
     storage.close()
+
 
 @app.route('/hbnb', strict_slashes=False)
 def hbnb():
@@ -22,10 +24,11 @@ def hbnb():
     states = storage.all(State).values()
     amenities = storage.all(Amenity).values()
     places = storage.all(Place).values()
-    return render_template('100-hbnb.html', 
-                           states=sorted(states, key=lambda x: x.name), 
+    return render_template('100-hbnb.html',
+                           states=sorted(states, key=lambda x: x.name),
                            amenities=sorted(amenities, key=lambda x: x.name),
                            places=sorted(places, key=lambda x: x.name))
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
