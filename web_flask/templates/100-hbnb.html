@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<HEAD>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HBNB</title>
+    <LINK rel="stylesheet" href="../static/styles/103-header.css">
+    <LINK rel="stylesheet" href="../static/styles/103-footer.css">
+    <LINK rel="stylesheet" href="../static/styles/4-common.css">
+    <LINK rel="stylesheet" href="../static/styles/6-filters.css">
+    <link rel="stylesheet" href="../static/styles/8-places.css">
+</HEAD>
+<BODY>
+    <HEADER>
+        <DIV class="container">
+            <DIV class="logo">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="HBNB logo">
+            </DIV>
+            <DIV class="title">
+                <h1>HBNB</h1>
+            </DIV>
+        </DIV>
+    </HEADER>
+    <DIV class="filters">
+        <DIV class="container">
+            <DIV class="filters_box">
+                <h3>States</h3>
+                <h4>&nbsp;</h4>
+                <ul>
+                    {% for state in states %}
+                        <li>{{ state.name }}
+                            <ul>
+                                {% for city in state.cities %}
+                                    <li>{{ city.name }}</li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </DIV>
+            <DIV class="filters_box">
+                <h3>Amenities</h3>
+                <h4>&nbsp;</h4>
+                <ul>
+                    {% for amenity in amenities %}
+                        <li>{{ amenity.name }}</li>
+                    {% endfor %}
+                </ul>
+            </DIV>
+        </DIV>
+    </DIV>
+    <DIV class="places">
+        <DIV class="container">
+            <h3>Places</h3>
+            <DIV class="places_list">
+                {% for place in places %}
+                    <DIV class="place">
+                        <DIV class="price_by_night">${{ place.price_by_night }}</DIV>
+                        <h2>{{ place.name }}</h2>
+                        <DIV class="information">
+                            <DIV class="max_guest">{{ place.max_guest }} Guests</DIV>
+                            <DIV class="number_rooms">{{ place.number_rooms }} Bedrooms</DIV>
+                            <DIV class="number_bathrooms">{{ place.number_bathrooms }} Bathrooms</DIV>
+                        </DIV>
+                        <DIV class="description">
+                            {{ place.description | safe }}
+                        </DIV>
+                    </DIV>
+                {% endfor %}
+            </DIV>
+        </DIV>
+    </DIV>
+    <footer>
+        <DIV class="container">
+            <p>&copy; 2021 Holberton School</p>
+        </DIV>
+    </footer>
+</BODY>
+</html>
