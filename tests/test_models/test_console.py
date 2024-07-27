@@ -3,7 +3,7 @@
 
 import unittest
 from console import HBNBCommand
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 from io import StringIO
 
 
@@ -18,12 +18,14 @@ class TestConsole(unittest.TestCase):
         """Tear down test environment"""
         pass
 
+    @patch('builtins.exit', MagicMock())
     def test_quit(self):
         """Test quit command"""
         with patch('sys.stdout', new=StringIO()) as f:
             self.cli.onecmd("quit")
             self.assertEqual(f.getvalue(), "")
 
+    @patch('builtins.exit', MagicMock())
     def test_EOF(self):
         """Test EOF command"""
         with patch('sys.stdout', new=StringIO()) as f:
