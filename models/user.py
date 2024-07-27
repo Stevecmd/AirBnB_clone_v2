@@ -1,15 +1,12 @@
 #!/usr/bin/python3
 
-""" holds class User"""
+""" holds User class """
 import models
 from models.base_model import BaseModel, Base
 from os import getenv
-import sqlalchemy
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
 
-from sqlalchemy import Column, String
-from models.base_model import BaseModel, Base
 
 """
 This module defines a class User that inherits from BaseModel and Base

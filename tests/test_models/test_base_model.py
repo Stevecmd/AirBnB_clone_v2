@@ -1,45 +1,49 @@
 #!/usr/bin/python3
 """ """
 from models.base_model import BaseModel
-from models import storage
 import unittest
 import datetime
 from uuid import UUID
 import json
 import os
-import models
 
 
-class test_basemodel(unittest.TestCase):
-    """ """
+class TestBaseModel(unittest.TestCase):
+    """Test cases for the BaseModel class"""
 
     def __init__(self, *args, **kwargs):
-        """ """
+        """Initialize the test case"""
         super().__init__(*args, **kwargs)
         self.name = 'BaseModel'
         self.value = BaseModel
 
     def setUp(self):
         """Set up for the tests"""
-        self.value = BaseModel
+        pass
+        # self.value = BaseModel
 
-        if hasattr(storage, 'storage_t') and storage.storage_t == 'db':
-            from sqlalchemy import create_engine
-            from sqlalchemy.orm import scoped_session, sessionmaker
+        # if hasattr(storage, 'storage_t') and storage.storage_t == 'db':
+        #     from sqlalchemy import create_engine
+        #     from sqlalchemy.orm import scoped_session, sessionmaker
 
-            self.engine = create_engine('sqlite:///:memory:', echo=False)
-            self.Session = scoped_session(sessionmaker(bind=self.engine))
-            Base.metadata.create_all(self.engine)
-            storage._DBStorage__session = self.Session
+        #     self.engine = create_engine('sqlite:///:memory:', echo=False)
+        #     self.Session = scoped_session(sessionmaker(bind=self.engine))
+        #     Base.metadata.create_all(self.engine)
+        #     storage._DBStorage__session = self.Session
+
+    # def tearDown(self):
+    #     """Tear down method for tests"""
+    #     if hasattr(storage, 'storage_t') and storage.storage_t == 'db':
+    #         Base.metadata.drop_all(self.engine)
+    #         storage._DBStorage__session.remove()
+    #         storage._DBStorage__session = None
+    #     try:
+    #         os.remove('file.json')
+    #     except FileNotFoundError:
+    #         pass
 
     def tearDown(self):
         """Tear down method for tests"""
-        from models import storage
-
-        if hasattr(storage, 'storage_t') and storage.storage_t == 'db':
-            Base.metadata.drop_all(self.engine)
-            storage._DBStorage__session.remove()
-            storage._DBStorage__session = None
         try:
             os.remove('file.json')
         except FileNotFoundError:
@@ -51,14 +55,14 @@ class test_basemodel(unittest.TestCase):
         self.assertEqual(type(i), self.value)
 
     def test_kwargs(self):
-        """ """
+        """Test instantiation with kwargs"""
         i = self.value()
         copy = i.to_dict()
         new = BaseModel(**copy)
         self.assertFalse(new is i)
 
     def test_kwargs_int(self):
-        """ """
+        """Test instantiation with invalid kwargs"""
         i = self.value()
         copy = i.to_dict()
         copy.update({1: 2})
@@ -70,45 +74,39 @@ class test_basemodel(unittest.TestCase):
         i = self.value()
         i.save()
         key = self.name + "." + i.id
-        storage_type = os.getenv('HBNB_TYPE_STORAGE')
-        if storage_type == 'file':
-            with open('file.json', 'r') as f:
-                j = json.load(f)
-                self.assertEqual(j[key], i.to_dict())
-        else:
-            db_session = getattr(models.storage, '_DBStorage__session', None)
-            if db_session:
-                db_obj = db_session.query(BaseModel).filter_by(id=i.id).first()
-                self.assertIsNotNone(db_obj)
+        with open('file.json', 'r') as f:
+            j = json.load(f)
+            self.assertEqual(j[key], i.to_dict())
+
+    # def test_str(self):
+    #     """Test string representation"""
+    #     i = self.value()
+    #     self.assertEqual(
+    #         str(i),
+    #         '[{}] ({}) {}'.format(
+    #             i.__class__.__name__,
+    #             i.id, i.__dict__
+    #         )
+    #     )
 
     def test_str(self):
-        """ """
-        i = self.value()
+        """Test string representation"""
+        i = self.value()()
         self.assertEqual(
             str(i),
             '[{}] ({}) {}'.format(
-                i.__class__.__name__,
-                i.id, i.__dict__
+                self.name, i.id, i.__dict__
             )
         )
 
     def test_key_format(self):
-        """ Key is properly formatted """
-        # Create and add a new BaseModel object to the storage
+        """Key is properly formatted"""
         new = BaseModel()
         storage.new(new)
         storage.save()
-
-        # Retrieve the ID from the newly created object
         _id = new.to_dict()['id']
-
-        # Retrieve all keys from the storage
         keys = list(storage.all().keys())
-
-        # Ensure that at least one key exists in storage
         self.assertGreater(len(keys), 0, "No keys found in storage")
-
-        # Check the format of the first key
         temp = keys[0]
         expected_key = 'BaseModel' + '.' + _id
         self.assertEqual(temp, expected_key)
