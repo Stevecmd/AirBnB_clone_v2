@@ -16,13 +16,8 @@ class test_fileStorage(unittest.TestCase):
             del_list.append(key)
         for key in del_list:
             del storage._FileStorage__objects[key]
-
-    # def tearDown(self):
-    #     """ Remove storage file at end of tests """
-    #     try:
-    #         os.remove('file.json')
-    #     except:
-    #         pass
+        if os.path.exists('file.json'):
+            os.remove('file.json')
 
     def test_obj_list_empty(self):
         """ __objects is initially empty """
@@ -63,7 +58,7 @@ class test_fileStorage(unittest.TestCase):
     def test_reload(self):
         """ Storage file is successfully loaded to __objects """
         new = BaseModel()
-        storage.save()
+        new.save()
         storage.reload()
         
         # Retrieve the newly loaded object from storage
@@ -81,8 +76,8 @@ class test_fileStorage(unittest.TestCase):
         """ Load from an empty file """
         with open('file.json', 'w') as f:
             pass
-        with self.assertRaises(ValueError):
-            storage.reload()
+        storage.reload()
+        self.assertEqual(storage.all(), {})
 
     def test_reload_from_nonexistent(self):
         """ Nothing happens if file does not exist """

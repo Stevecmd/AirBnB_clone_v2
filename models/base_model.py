@@ -31,7 +31,10 @@ class BaseModel:
     def __init__(self, *args, **kwargs):
         """Initialization of the base model"""
         if kwargs:
+            valid_keys = {'id', 'created_at', 'updated_at', '__class__'}
             for key, value in kwargs.items():
+                if key not in valid_keys:
+                    raise KeyError(f"Unexpected key {key} in kwargs")
                 if key != "__class__":
                     setattr(self, key, value)
             if kwargs.get("created_at", None) and type(self.created_at) is str:
