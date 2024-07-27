@@ -4,6 +4,7 @@
 from tests.test_models.test_base_model import test_basemodel
 from models.review import Review
 
+
 class test_review(test_basemodel):
     """Test cases for the Review class"""
 
@@ -27,6 +28,7 @@ class test_review(test_basemodel):
         """Test the text attribute"""
         new = self.value()
         self.assertEqual(type(new.text), str)
+
 
 if __name__ == "__main__":
     unittest.main()

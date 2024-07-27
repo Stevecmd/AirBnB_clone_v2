@@ -22,7 +22,7 @@ class test_basemodel(unittest.TestCase):
     def setUp(self):
         """Set up for the tests"""
         self.value = BaseModel
-        
+
         if hasattr(storage, 'storage_t') and storage.storage_t == 'db':
             from sqlalchemy import create_engine
             from sqlalchemy.orm import scoped_session, sessionmaker
@@ -35,7 +35,7 @@ class test_basemodel(unittest.TestCase):
     def tearDown(self):
         """Tear down method for tests"""
         from models import storage
-        
+
         if hasattr(storage, 'storage_t') and storage.storage_t == 'db':
             Base.metadata.drop_all(self.engine)
             storage._DBStorage__session.remove()
@@ -81,11 +81,16 @@ class test_basemodel(unittest.TestCase):
                 db_obj = db_session.query(BaseModel).filter_by(id=i.id).first()
                 self.assertIsNotNone(db_obj)
 
-
     def test_str(self):
         """ """
         i = self.value()
-        self.assertEqual(str(i), '[{}] ({}) {}'.format(i.__class__.__name__, i.id, i.__dict__))
+        self.assertEqual(
+            str(i),
+            '[{}] ({}) {}'.format(
+                i.__class__.__name__,
+                i.id, i.__dict__
+            )
+        )
 
     def test_key_format(self):
         """ Key is properly formatted """
@@ -107,8 +112,6 @@ class test_basemodel(unittest.TestCase):
         temp = keys[0]
         expected_key = 'BaseModel' + '.' + _id
         self.assertEqual(temp, expected_key)
-
-
 
     def test_todict(self):
         """ """

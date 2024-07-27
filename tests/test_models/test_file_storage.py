@@ -60,7 +60,7 @@ class test_fileStorage(unittest.TestCase):
         new = BaseModel()
         new.save()
         storage.reload()
-        
+
         # Retrieve the newly loaded object from storage
         loaded = None
         for obj in storage.all().values():
