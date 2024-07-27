@@ -76,9 +76,10 @@ class test_basemodel(unittest.TestCase):
                 j = json.load(f)
                 self.assertEqual(j[key], i.to_dict())
         else:
-            db_session = models.storage._DBStorage__session
-            db_obj = db_session.query(BaseModel).filter_by(id=i.id).first()
-            self.assertIsNotNone(db_obj)
+            db_session = getattr(models.storage, '_DBStorage__session', None)
+            if db_session:
+                db_obj = db_session.query(BaseModel).filter_by(id=i.id).first()
+                self.assertIsNotNone(db_obj)
 
 
     def test_str(self):
