@@ -13,13 +13,14 @@ This module defines a class User that inherits from BaseModel and Base
 
 storage_type = getenv('HBNB_TYPE_STORAGE')
 
+if storage_type == 'db':
+    from sqlalchemy import Column, String
+    from sqlalchemy.orm import relationship
+
 
 class User(BaseModel, Base):
     """Representation of a user """
     if storage_type == 'db':
-        from sqlalchemy import Column, String
-        from sqlalchemy.orm import relationship
-
         __tablename__ = 'users'
         email = Column(String(128), nullable=False)
         password = Column(String(128), nullable=False)

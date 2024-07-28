@@ -13,15 +13,18 @@ import uuid
 
 time = "%Y-%m-%dT%H:%M:%S.%f"
 
-# Ensure Base is only created once
-Base = declarative_base()
 
 storage_type = getenv('HBNB_TYPE_STORAGE')
+
+if storage_type == "db":
+    Base = declarative_base()
+else:
+    Base = object
 
 
 class BaseModel(Base):
     """The BaseModel class from which future classes will be derived"""
-    __abstract__ = True
+    # __abstract__ = True
     if storage_type == "db":
         id = Column(String(60), primary_key=True)
         created_at = Column(DateTime, default=datetime.utcnow)
