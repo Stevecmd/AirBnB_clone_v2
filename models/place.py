@@ -1,23 +1,30 @@
 #!/usr/bin/python
 """ holds class City"""
-import models
-from models.base_model import BaseModel, Base
-from os import getenv
 import sqlalchemy
 from sqlalchemy import Column, String, ForeignKey
 from sqlalchemy.orm import relationship
+from models.base_model import BaseModel, Base
+import models
+from os import getenv
 
 
 class Place(BaseModel, Base):
     """Representation of city """
+    __tablename__ = 'places'
     if models.storage_type == "db":
-        __tablename__ = 'places'
-        state_id = Column(String(60), ForeignKey('states.id'), nullable=False)
         name = Column(String(128), nullable=False)
-        places = relationship("Place", backref="cities")
+        user_id = Column(String(60), ForeignKey('users.id'), nullable=False)
+        city_id = Column(String(60), ForeignKey('cities.id'), nullable=False)
+        state_id = Column(String(60), ForeignKey('states.id'), nullable=False)
+        # Define relationships
+        user = relationship("User", back_populates="places")
+        city = relationship("City", back_populates="places")
+        state = relationship("State", back_populates="places")
     else:
-        state_id = ""
         name = ""
+        user_id = ""
+        city_id = ""
+        state_id = ""
 
     def __init__(self, *args, **kwargs):
         """initializes place"""
