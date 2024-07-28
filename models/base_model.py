@@ -33,7 +33,7 @@ class BaseModel(Base):
             valid_keys = {'id', 'created_at', 'updated_at', '__class__'}
             for key, value in kwargs.items():
                 if key not in valid_keys:
-                    raise KeyError(f"Unexpected key {key} in kwargs")
+                    raise KeyError("Unexpected key {} in kwargs".format(key))
                 if key != "__class__":
                     setattr(self, key, value)
             self.created_at = (
