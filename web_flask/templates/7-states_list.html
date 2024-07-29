@@ -12,7 +12,7 @@
 
     <UL>
       {% if states %}
-        {% for state in states.values()|sort(attribute="name") %}
+        {% for state in states|sort(attribute="name") %}
         <L1 style="list-style: none">
           {{ state.id }}: <b>{{ state['name'] }}</b>
         </L1>
