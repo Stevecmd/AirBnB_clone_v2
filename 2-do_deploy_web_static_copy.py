@@ -4,11 +4,14 @@ Fabric script to distribute an archive to web servers
 """
 
 from datetime import datetime
-from fabric.api import *
+from os.path import exists
+from fabric.api import put, run, env, local, lcd, cd
 import os
 
 env.hosts = ['54.160.94.43', '34.203.38.175']
 env.user = "ubuntu"
+env.key_filename = "~/.ssh/id_ed25519"
+env.timeout = 60  # Increase timeout to 60 seconds
 
 
 def do_pack():
@@ -40,25 +43,21 @@ def do_deploy(archive_path):
     Returns:
         bool: True if deployment was successful, False otherwise.
     """
-    if not os.path.exists(archive_path):
+    if exists(archive_path) is False:
         return False
-
     try:
-        archived_file = archive_path.split("/")[-1]
-        no_ext = archived_file.split(".")[0]
-        release_path = "/data/web_static/releases/{}/".format(no_ext)
-        tmp_path = "/tmp/{}".format(archived_file)
-
-        put(archive_path, tmp_path)
-        run("sudo mkdir -p {}".format(release_path))
-        run("sudo tar -xzf {} -C {}".format(tmp_path, release_path))
-        run("sudo rm {}".format(tmp_path))
-        run("sudo mv {}web_static/* {}".format(release_path, release_path))
-        run("sudo rm -rf {}web_static".format(release_path))
-        run("sudo rm -rf /data/web_static/current")
-        run("sudo ln -s {} /data/web_static/current".format(release_path))
+        file_n = archive_path.split("/")[-1]
+        no_ext = file_n.split(".")[0]
+        path = "/data/web_static/releases/"
+        put(archive_path, '/tmp/')
+        run('sudo mkdir -p {}{}/'.format(path, no_ext))
+        run('sudo tar -xzf /tmp/{} -C {}{}/'.format(file_n, path, no_ext))
+        run('sudo rm /tmp/{}'.format(file_n))
+        run('sudo rsync -a {0}{1}/web_static/ {0}{1}/'.format(path, no_ext))
+        run('sudo rm -rf {}{}/web_static'.format(path, no_ext))
+        run('sudo rm -rf /data/web_static/current')
+        run('sudo ln -s {}{}/ /data/web_static/current'.format(path, no_ext))
         run("sudo service nginx reload")
-
         print("New version deployed!")
         return True
     except Exception as e:
