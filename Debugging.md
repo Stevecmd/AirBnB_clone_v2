@@ -48,4 +48,13 @@ Install MySQL using [MySQL Installation steps](https://www.mysqltutorial.net/ins
 
 More advanced instructions [Ubuntu Instructions](https://ubuntu.com/server/docs/install-and-configure-a-mysql-server)
 
-At present Root isnt secured.
+Exports for dev environment:
+```sh
+
+(myvenv) stevecmd@DESKTOP-UTB295U:~/ALX/AirBnB_clone_v2$ export HBNB_MYSQL_USER='hbnb_dev'
+(myvenv) stevecmd@DESKTOP-UTB295U:~/ALX/AirBnB_clone_v2$ export HBNB_MYSQL_PWD='hbnb_dev_pwd'
+(myvenv) stevecmd@DESKTOP-UTB295U:~/ALX/AirBnB_clone_v2$ export HBNB_MYSQL_HOST='localhost'
+(myvenv) stevecmd@DESKTOP-UTB295U:~/ALX/AirBnB_clone_v2$ export HBNB_MYSQL_DB='hbnb_dev_db'
+(myvenv) stevecmd@DESKTOP-UTB295U:~/ALX/AirBnB_clone_v2$ export HBNB_TYPE_STORAGE='db'
+
+```

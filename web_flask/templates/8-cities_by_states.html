@@ -8,15 +8,15 @@
 <BODY>
   <H1>States</H1>
   <UL>
-    <LI style="list-style: none">{% for state in states.values()|sort(attribute="name")
-    %}</LI>
+    {% for state in states.values()|sort(attribute='name') %}
     <LI>{{ state.id }}: <B>{{ state.name }}</B>
       <UL>
-        <LI style="list-style: none">{% for city in state.cities|sort(attribute="name")
-          <LI>{{ city.id }}: <B>{{ city.name }}</B></LI>
-          <LI style="list-style: none">{% endfor %}</LI>
+        {% for city in state.cities|sort(attribute='name') %}
+        <LI>{{ city.id }}: <B>{{ city.name }}</B></LI>
+        {% endfor %}
       </UL>
-      <LI style="list-style: none">{% endfor %}</LI>
+    </LI>
+    {% endfor %}
   </UL>
 </BODY>
 </html>
