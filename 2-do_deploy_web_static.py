@@ -4,7 +4,7 @@ Fabric script to distribute an archive to web servers
 """
 
 from datetime import datetime
-from fabric.api import *
+from fabric.api import env, local, put, run, lcd, cd
 import os
 
 env.hosts = ['54.160.94.43', '34.203.38.175']
@@ -19,7 +19,7 @@ def do_pack():
         str: The archive path if the archive has been correctly generated.
         None: If the archive was not generated.
     """
-    local("sudo mkdir -p versions")
+    local("mkdir -p versions")
     date = datetime.now().strftime("%Y%m%d%H%M%S")
     archived_f_path = "versions/web_static_{}.tgz".format(date)
     t_gzip_archive = local("tar -cvzf {} web_static".format(archived_f_path))
@@ -44,19 +44,19 @@ def do_deploy(archive_path):
         return False
 
     try:
-        archived_file = archive_path.split("/")[-1]
-        no_ext = archived_file.split(".")[0]
-        release_path = "/data/web_static/releases/{}/".format(no_ext)
-        tmp_path = "/tmp/{}".format(archived_file)
+        file_name = os.path.basename(archive_path)
+        folder_name = file_name.replace(".tgz", "")
+        folder_path = "/data/web_static/releases/{}/".format(folder_name)
+        tmp_path = "/tmp/{}".format(file_name)
 
         put(archive_path, tmp_path)
-        run("sudo mkdir -p {}".format(release_path))
-        run("sudo tar -xzf {} -C {}".format(tmp_path, release_path))
-        run("sudo rm {}".format(tmp_path))
-        run("sudo mv {}web_static/* {}".format(release_path, release_path))
-        run("sudo rm -rf {}web_static".format(release_path))
-        run("sudo rm -rf /data/web_static/current")
-        run("sudo ln -s {} /data/web_static/current".format(release_path))
+        run("mkdir -p {}".format(folder_path))
+        run("tar -xzf {} -C {}".format(tmp_path, folder_path))
+        run("rm {}".format(tmp_path))
+        run("mv {}web_static/* {}".format(folder_path, folder_path))
+        run("rm -rf {}web_static".format(folder_path))
+        run("rm -rf /data/web_static/current")
+        run("ln -s {} /data/web_static/current".format(folder_path))
         run("sudo service nginx reload")
 
         print("New version deployed!")
