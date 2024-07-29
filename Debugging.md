@@ -43,3 +43,9 @@ python3 -m unittest discover tests
 python3 -m unittest discover tests.test_console
 
 ```
+
+Install MySQL using [MySQL Installation steps](https://www.mysqltutorial.net/install-mysql-on-ubuntu-20-04/)
+
+More advanced instructions [Ubuntu Instructions](https://ubuntu.com/server/docs/install-and-configure-a-mysql-server)
+
+At present Root isnt secured.

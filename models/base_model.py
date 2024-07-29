@@ -25,24 +25,38 @@ else:
 class BaseModel(Base):
     """The BaseModel class from which future classes will be derived"""
     __abstract__ = True
-    if storage_type == "db":
-        id = Column(String(60), primary_key=True)
-        created_at = Column(DateTime, default=datetime.utcnow)
-        updated_at = Column(DateTime, default=datetime.utcnow)
+    id_column_type = String(60)
+
+    @staticmethod
+    def generate_id_default():
+        return str(uuid.uuid4())
+    id = Column(
+        id_column_type,
+        primary_key=True,
+        default=generate_id_default
+    )
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     def __init__(self, *args, **kwargs):
         """Initialization of the base model"""
         if kwargs:
-            valid_keys = {'id', 'created_at', 'updated_at', '__class__'}
             for key, value in kwargs.items():
-                if key not in valid_keys:
+                if key != '__class__':
                     setattr(self, key, value)
             if 'created_at' in kwargs:
-                self.created_at = datetime.strptime(kwargs["created_at"], time)
+                created_at_str = kwargs["created_at"]
+                created_at_format = '%Y-%m-%dT%H:%M:%S.%f'
+                self.created_at = datetime.strptime(
+                    created_at_str,
+                    created_at_format
+                )
             else:
-                self.updated_at = datetime.now(timezone.utc)
+                self.created_at = datetime.now(timezone.utc)
             if 'updated_at' in kwargs:
-                self.updated_at = datetime.strptime(kwargs["updated_at"], time)
+                date_str = kwargs["updated_at"]
+                date_format = '%Y-%m-%dT%H:%M:%S.%f'
+                self.updated_at = datetime.strptime(date_str, date_format)
             else:
                 self.updated_at = datetime.now(timezone.utc)
             if 'id' not in kwargs:
@@ -54,7 +68,7 @@ class BaseModel(Base):
 
     def __str__(self):
         """String representation of the BaseModel class"""
-        return "[{:s}] ({:s}) {}".format(
+        return "[{}] ({}) {}".format(
             self.__class__.__name__,
             self.id,
             self.__dict__

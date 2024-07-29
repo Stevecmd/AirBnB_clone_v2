@@ -24,10 +24,12 @@ class TestConsole(unittest.TestCase):
         self.backup = sys.stdout
         self.output = StringIO()
         sys.stdout = self.output
+        self.console = HBNBCommand()
 
     def tearDown(self):
         """Tear down test environment"""
         sys.stdout = self.backup
+        self.output.close()
 
     def test_do_create(self):
         """Test create command"""
@@ -39,16 +41,22 @@ class TestConsole(unittest.TestCase):
         )
         command.onecmd(create_command)
         output = self.output.getvalue().strip()
-        self.assertTrue(output in storage.all().keys())
+        print(f"Output from create command: {output}")  # Debugging line
+        all_objects = storage.all()
+        print(f"All objects in storage: {all_objects}")  # Debugging line
+        key = f"User.{output}"  # Adjust key format if necessary
+        self.assertTrue(key in all_objects.keys())
 
     def test_do_show(self):
         """Test show command"""
-        HBNBCommand().onecmd("create State name=\"California\"")
+        HBNBCommand().onecmd('create State name="California"')
         state_id = self.output.getvalue().strip()
         self.output.truncate(0)
         self.output.seek(0)
         HBNBCommand().onecmd(f"show State {state_id}")
-        self.assertIn(f"[State] ({state_id})", self.output.getvalue().strip())
+        expected_output = f"[State] ({state_id})"
+        actual_output = self.output.getvalue().strip()
+        self.assertIn(expected_output, actual_output)
 
     def test_do_destroy(self):
         """Test destroy command"""
