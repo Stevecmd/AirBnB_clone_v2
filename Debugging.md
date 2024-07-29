@@ -11,4 +11,35 @@ Testing the commands to ensure they are working
 (hbnb) ["[Place] (a41547c6-bc7d-4b29-8906-2b9f55da49a6) {'id': 'a41547c6-bc7d-4b29-8906-2b9f55da49a6', 'created_at': datetime.datetime(2024, 7, 29, 11, 3, 10, 689233), 'updated_at': datetime.datetime(2024, 7, 29, 11, 3, 10, 689233), 'city_id': '0001', 'user_id': '0001', 'name': 'My little house', 'number_rooms': 4, 'number_bathrooms': 2, 'max_guest': 10, 'price_by_night': 300, 'latitude': 37.773972, 'longitude': -122.431297}"]
 (hbnb)
 ```
+Testing console inputs:
+```sh
 
+ALX/AirBnB_clone_v2$ python console.py 
+(hbnb) all User
+[]
+(hbnb) all Place
+[]
+(hbnb) create Place
+31ca9582-fc4f-406e-a473-8bf874900fa7
+(hbnb) all Place
+["[Place] (31ca9582-fc4f-406e-a473-8bf874900fa7) {'id': '31ca9582-fc4f-406e-a473-8bf874900fa7', 'created_at': datetime.datetime(2024, 7, 29, 13, 7, 18, 323070, tzinfo=datetime.timezone.utc), 'updated_at': datetime.datetime(2024, 7, 29, 13, 7, 18, 323070, tzinfo=datetime.timezone.utc)}"]
+(hbnb) destroy Place 31ca9582-fc4f-406e-a473-8bf874900fa7
+(hbnb) all Place
+[]
+(hbnb) create Place city_id="0001" user_id="0001" name="My_Little_House"
+15b6f8ec-871e-4604-8422-f2099972598b
+(hbnb) all Place
+["[Place] (15b6f8ec-871e-4604-8422-f2099972598b) {'id': '15b6f8ec-871e-4604-8422-f2099972598b', 'created_at': datetime.datetime(2024, 7, 29, 13, 9, 58, 16653, tzinfo=datetime.timezone.utc), 'updated_at': datetime.datetime(2024, 7, 29, 13, 9, 58, 16653, tzinfo=datetime.timezone.utc), 'city_id': '0001', 'user_id': '0001', 'name': 'My Little House'}"]
+(hbnb) quit
+
+```
+
+Tests
+```sh
+python3 -m unittest discover tests 2>&1 /dev/null | tail -n 1
+
+python3 -m unittest discover tests
+
+python3 -m unittest discover tests.test_console
+
+```
