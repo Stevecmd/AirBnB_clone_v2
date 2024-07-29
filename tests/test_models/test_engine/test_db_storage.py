@@ -9,7 +9,6 @@ from models.state import State
 from os import getenv
 from sqlalchemy.orm import scoped_session
 import MySQLdb
-import pep8
 
 
 class TestDBStorage(unittest.TestCase):
