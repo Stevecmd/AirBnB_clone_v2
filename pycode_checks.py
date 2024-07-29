@@ -5,6 +5,7 @@ Module to run pycodestyle checks on specified directories and files.
 
 import subprocess
 
+
 def run_pycodestyle_checks():
     """
     Run pycodestyle checks on specified directories and files.
@@ -36,6 +37,7 @@ def run_pycodestyle_checks():
             print(stderr.decode('utf-8'))
 
     print("All checks completed.")
+
 
 if __name__ == "__main__":
     run_pycodestyle_checks()

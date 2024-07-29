@@ -15,4 +15,6 @@ Sample use of validator:
 
 Sample use of `check-docs`:
 `python3 ./check-docs.py pycode_checks`<br />
-``
+
+Using MySQL Locally:
+`cat 7-dump.sql | mysql -uroot -p -h 127.0.0.1`

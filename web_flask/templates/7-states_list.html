@@ -11,12 +11,14 @@
     <H1>States</H1>
 
     <UL>
-      <LI style="list-style: none">{% for state in states.values()|sort(attribute="name")
-      %}</LI>
-  
-      <LI>{{state.id}}: <b>{{state.name}}</b></LI>
-  
-      <LI style="list-style: none">{% endfor %}</LI>
+      {% if states %}
+        {% for state in states.values()|sort(attribute="name") %}
+        <L1 style="list-style: none">
+          {{ state.id }}: <b>{{ state['name'] }}</b>
+        </L1>
+        {% endfor %}
+      {% endif %}
+
     </UL>
 </BODY>
 </HTML>
