@@ -6,61 +6,53 @@
     <title>HBNB</title>
     <LINK rel="stylesheet" href="../static/styles/103-header.css">
     <LINK rel="stylesheet" href="../static/styles/103-footer.css">
-    <LINK rel="stylesheet" href="../static/styles/4-common.css">
+    <LINK rel="stylesheet" href="{{ url_for('static', filename='styles/4-common.css') }}">
     <LINK rel="stylesheet" href="../static/styles/6-filters.css">
     <link rel="stylesheet" href="../static/styles/8-places.css">
+    <LINK rel="icon" href="{{ url_for('static', filename='styles/images/logo.png') }}">
 </HEAD>
 
 <BODY>
+  <HEADER>
     <DIV class="container">
         <DIV class="logo">
-            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="HBNB logo">
+            <img src="{{ url_for('static', filename='styles/images/logo.png') }}" alt="HBNB logo">
         </DIV>
         <DIV class="title">
-            <h1>HBNB</h1>
+            <!-- <h1>HBNB</h1> -->
         </DIV>
     </DIV>
+  </HEADER>
   
     <DIV class="filters">
       <DIV class="container">
         <DIV class="filters_box">
-          <H3>States</H3>
-  
-          <H4>&nbsp;</H4>
-  
-          <UL>
-            <LI style="list-style: none">{% for state in states %}</LI>
-  
-            <LI>{{ state.name }}
-  
-              <UL>
-                <LI style="list-style: none">{% for city in state.cities %}</LI>
-  
-                <LI>{{ city.name }}</LI>
-  
-                <LI style="list-style: none">{% endfor %}</LI>
-              </UL>
-            </LI>
-  
-            <LI style="list-style: none">{% endfor %}</LI>
-        </UL>
+          <DIV class="filter-item">
+            <H3 id="states-header">States</H3>
+            <ul class="states-list">
+                <LI style="list-style: none">{% for state in states %}</LI>
+                    <LI>{{ state.name }}
+                        <ul>
+                            <LI style="list-style: none">{% for city in state.cities %}</LI>
+                                <LI>{{ city.name }}</LI>
+                                <LI style="list-style: none">{% endfor %}</LI>
+                        </ul>
+                    </LI>
+                    <LI style="list-style: none">{% endfor %}</LI>
+            </ul>
         </DIV>
-  
-        <DIV class="filters_box">
-          <H3>Amenities</H3>
-  
-          <H4>&nbsp;</H4>
-  
-          <UL>
-            <LI style="list-style: none">{% for amenity in amenities %}</LI>
-  
-            <LI>{{ amenity.name }}</LI>
-  
-            <LI style="list-style: none">{% endfor %}</LI>
-          </UL>
-        </DIV>
-      </DIV>
-    </DIV>
+
+        <DIV class="filter-item">
+          <H3 id="amenities-header">Amenities</H3>
+          <ul class="amenities-list">
+              <LI style="list-style: none">{% for amenity in amenities %}</LI>
+                  <LI>{{ amenity.name }}</LI>
+                  <LI style="list-style: none">{% endfor %}</LI>
+      </DIV></ul>
+      <button class="search-button">Search</button>
+  </DIV>
+</DIV>
+</DIV>
   
     <DIV class="places">
       <DIV class="container">
@@ -101,5 +93,30 @@
     <DIV class="container">
       <P>&#169; 2021 Holberton School</P>
     </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', (event) => {
+          const statesHeader = document.getElementById('states-header');
+          const statesList = document.querySelector('.states-list');
+          const amenitiesHeader = document.getElementById('amenities-header');
+          const amenitiesList = document.querySelector('.amenities-list');
+
+          statesHeader.addEventListener('click', () => {
+              if (statesList.style.display === 'none' || statesList.style.display === '') {
+                  statesList.style.display = 'block';
+              } else {
+                  statesList.style.display = 'none';
+              }
+          });
+
+          amenitiesHeader.addEventListener('click', () => {
+              if (amenitiesList.style.display === 'none' || amenitiesList.style.display === '') {
+                  amenitiesList.style.display = 'block';
+              } else {
+                  amenitiesList.style.display = 'none';
+              }
+          });
+      });
+  </script>
   </BODY>
   </html>

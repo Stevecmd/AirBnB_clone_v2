@@ -59,6 +59,7 @@ ul {
 	list-style-type: none;
 	padding: 0px;
 	padding-bottom: 20px;
+	background-color: rgb(255, 255, 255);
 }
 
 h2 {
@@ -110,24 +111,28 @@ button:hover {
     display: flex;
     justify-content: space-between;
 	gap: 0; /* Remove any gap between the items */
+	background-color: rgb(255, 255, 255);
 }
 
 .filter-item {
-    border: 1px solid #DDDDDD;
+    border: 1px solid #ffffff;
     padding: 10px;
     border-radius: 4px;
     width: 50%; /* Adjust width to ensure they take up equal space */
     box-sizing: border-box; /* Ensure padding and border are included in the width */
+	background-color: rgb(255, 255, 255);
 }
 
 .filter-item h3 {
     margin: 0;
     cursor: pointer;
+	background-color: rgb(255, 255, 255);
 }
 
 .states-list, .amenities-list {
     display: none; /* Initially hide the states and amenities lists */
     margin-top: 10px;
+	background-color: rgb(255, 255, 255);
 }
 
 .search-button {
