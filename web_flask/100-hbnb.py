@@ -24,6 +24,10 @@ def hbnb():
     states = storage.all(State).values()
     amenities = storage.all(Amenity).values()
     places = storage.all(Place).values()
+
+    for place in places:
+        print(f"Place: {place.name}, Description: {place.description}")
+
     return render_template('100-hbnb.html',
                            states=sorted(states, key=lambda x: x.name),
                            amenities=sorted(amenities, key=lambda x: x.name),

@@ -17,6 +17,7 @@ class Place(BaseModel, Base):
         user_id = Column(String(60), ForeignKey('users.id'), nullable=False)
         city_id = Column(String(60), ForeignKey('cities.id'), nullable=False)
         state_id = Column(String(60), ForeignKey('states.id'), nullable=False)
+        description = Column(String(1024))
         # Define relationships
         user = relationship("User", back_populates="places")
         city = relationship("City", back_populates="places")
@@ -27,6 +28,7 @@ class Place(BaseModel, Base):
         user_id = ""
         city_id = ""
         state_id = ""
+        description = ""
 
     def __init__(self, *args, **kwargs):
         """initializes place"""

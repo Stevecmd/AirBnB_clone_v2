@@ -81,7 +81,10 @@ article {
 }
 
 .description {
-	text-align: left;
+    text-align: left;
+    display: block; /* Ensure it is displayed as a block element */
+    margin-top: 10px; /* Add some margin for spacing */
+    color: #333; /* Ensure the text color is visible */
 }
 
 h1 {
