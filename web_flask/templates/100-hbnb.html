@@ -104,23 +104,40 @@
           const statesList = document.querySelector('.states-list');
           const amenitiesHeader = document.getElementById('amenities-header');
           const amenitiesList = document.querySelector('.amenities-list');
-
-          statesHeader.addEventListener('click', () => {
+    
+          statesHeader.addEventListener('click', (e) => {
+              e.stopPropagation();
               if (statesList.style.display === 'none' || statesList.style.display === '') {
                   statesList.style.display = 'block';
+                  amenitiesList.style.display = 'none'; // Hide amenities list
               } else {
                   statesList.style.display = 'none';
               }
           });
-
-          amenitiesHeader.addEventListener('click', () => {
+    
+          amenitiesHeader.addEventListener('click', (e) => {
+              e.stopPropagation();
               if (amenitiesList.style.display === 'none' || amenitiesList.style.display === '') {
                   amenitiesList.style.display = 'block';
+                  statesList.style.display = 'none'; // Hide states list
               } else {
                   amenitiesList.style.display = 'none';
               }
           });
+    
+          document.addEventListener('click', () => {
+              statesList.style.display = 'none';
+              amenitiesList.style.display = 'none';
+          });
+    
+          statesList.addEventListener('click', (e) => {
+              e.stopPropagation();
+          });
+    
+          amenitiesList.addEventListener('click', (e) => {
+              e.stopPropagation();
+          });
       });
-  </script>
+    </script>
   </BODY>
   </html>

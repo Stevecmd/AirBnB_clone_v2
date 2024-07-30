@@ -161,6 +161,7 @@ article h2 {
     background-color: rgb(233, 233, 233);
     position: relative; /* Ensure the element is positioned */
     z-index: 10;
+	display: none;
 }
 
 .filter-item {
