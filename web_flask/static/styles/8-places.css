@@ -53,6 +53,11 @@ article {
     height: 60px;
 }
 
+.price_by_night h2 {
+    font-weight: bold; /* Make the text bold */
+    font-size: 60px; /* Increase the font size */
+}
+
 .information {
 	display: block;
 	height: 80px;
@@ -104,6 +109,13 @@ article h2 {
 	padding: 0px;
 }
 
+.place_title {
+    text-align: left;
+	font-size: 30px;
+	margin: 10px auto;
+	padding: 0px;
+}
+
 .guest_icon {
 	display: flex;
 	background-image: url("../styles/images/icon_group.png");
@@ -143,4 +155,14 @@ article h2 {
     border-radius: 10px;
     width: calc(50% - 10px); /* Adjust width to fit two items per row with space between */
     margin-bottom: 20px; /* Add some space at the bottom */
+}
+
+.amenities-list, .states-list {
+    background-color: rgb(233, 233, 233);
+    position: relative; /* Ensure the element is positioned */
+    z-index: 10;
+}
+
+.filter-item {
+    position: relative; /* Ensure the parent element is positioned */
 }
