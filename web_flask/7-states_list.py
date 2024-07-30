@@ -3,9 +3,22 @@
 Flask application that lists all states from DBStorage
 """
 
+import os
+import sys
 from flask import Flask, render_template
-from models import storage
-from models.state import State
+
+
+def setup_path_and_imports():
+    """Adjusts sys.path and imports necessary modules"""
+    parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    sys.path.append(parent_dir)
+    global storage, State
+    from models import storage
+    from models.state import State
+
+
+setup_path_and_imports()
+
 
 app = Flask(__name__)
 
