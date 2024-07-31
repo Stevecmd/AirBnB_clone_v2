@@ -5,6 +5,5 @@ tests/test_models/test_engine/__pycache__/
 models/engine/__pycache__/
 /venv
 *.pyc
-*.tgz
 myvenv/
 check-docs.py
