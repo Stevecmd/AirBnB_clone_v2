@@ -21,6 +21,7 @@ Warnings:
 
 from datetime import datetime
 from fabric import Connection, task
+from fabric.decorators import runs_once
 import os
 from os.path import exists, isdir
 import warnings
@@ -32,6 +33,7 @@ env_user = "ubuntu"
 env_key_filename = "~/.ssh/id_ed25519"
 
 
+@runs_once
 def do_pack():
     """
     Creates a .tgz archive from the contents of the web_static folder.
@@ -40,22 +42,25 @@ def do_pack():
         str: The archive path if the archive has been correctly generated.
         None: If the archive was not generated.
     """
+    if not os.path.isdir("versions"):
+        os.mkdir("versions")
+    cur_time = datetime.now()
+    output = "versions/web_static_{}{}{}{}{}{}.tgz".format(
+        cur_time.year,
+        cur_time.month,
+        cur_time.day,
+        cur_time.hour,
+        cur_time.minute,
+        cur_time.second
+    )
     try:
-        # Get the current date and time in the format YYYYMMDDHHMMSS
-        date = datetime.now().strftime("%Y%m%d%H%M%S")
-
-        # Create the versions directory if it does not exist
-        if isdir("versions") is False:
-            os.makedirs("versions")
-
-        # Create the archive file name
-        file_name = "versions/web_static_{}.tgz".format(date)
-        os.system("tar -cvzf {} web_static".format(file_name))
-
-        # Return the archive path
-        return file_name
+        print("Packing web_static to {}".format(output))
+        os.system("tar -cvzf {} web_static".format(output))
+        archive_size = os.stat(output).st_size
+        print("web_static packed: {} -> {} Bytes".format(output, archive_size))
     except Exception:
-        return None
+        output = None
+    return output
 
 
 def do_deploy(archive_path):
@@ -68,12 +73,13 @@ def do_deploy(archive_path):
     Returns:
         bool: True if all operations have been done correctly, otherwise False.
     """
-    if exists(archive_path) is False:
+    if not os.path.exists(archive_path):
         return False
+    file_name = os.path.basename(archive_path)
+    folder_name = file_name.replace(".tgz", "")
+    folder_path = "/data/web_static/releases/{}/".format(folder_name)
+    success = False
     try:
-        file_n = archive_path.split("/")[-1]
-        no_ext = file_n.split(".")[0]
-        path = "/data/web_static/releases/"
         conn = Connection(
             host=env_hosts[0],
             user=env_user,
@@ -81,17 +87,19 @@ def do_deploy(archive_path):
                 "key_filename": env_key_filename
             }
         )
-        conn.put(archive_path, '/tmp/')
-        conn.run('mkdir -p {}{}/'.format(path, no_ext))
-        conn.run('tar -xzf /tmp/{} -C {}{}/'.format(file_n, path, no_ext))
-        conn.run('rm /tmp/{}'.format(file_n))
-        conn.run('mv {0}{1}/web_static/* {0}{1}/'.format(path, no_ext))
-        conn.run('rm -rf {}{}/web_static'.format(path, no_ext))
-        conn.run('rm -rf /data/web_static/current')
-        conn.run('ln -s {}{}/ /data/web_static/current'.format(path, no_ext))
-        return True
+        conn.put(archive_path, "/tmp/{}".format(file_name))
+        conn.run("mkdir -p {}".format(folder_path))
+        conn.run("tar -xzf /tmp/{} -C {}".format(file_name, folder_path))
+        conn.run("rm -rf /tmp/{}".format(file_name))
+        conn.run("mv {}web_static/* {}".format(folder_path, folder_path))
+        conn.run("rm -rf {}web_static".format(folder_path))
+        conn.run("rm -rf /data/web_static/current")
+        conn.run("ln -s {} /data/web_static/current".format(folder_path))
+        print('New version is now LIVE!')
+        success = True
     except Exception:
-        return False
+        success = False
+    return success
 
 
 def deploy():
