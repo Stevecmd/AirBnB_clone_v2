@@ -20,7 +20,7 @@ Warnings:
 """
 
 from datetime import datetime
-from fabric import task
+from fabric import *
 from fabric.decorators import runs_once
 import os
 from os.path import exists, isdir
