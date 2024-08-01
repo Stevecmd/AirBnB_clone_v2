@@ -6,6 +6,8 @@ import inspect
 
 
 def check_documentation(module_name):
+    """
+    """
     try:
         # Load the module
         spec = importlib.util.spec_from_file_location(
