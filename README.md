@@ -553,3 +553,40 @@ pip install -r requirements.txt
 
 Online `HTML validator`:
 `https://infohound.net/tidy/`
+
+
+Manually testing documentation of a file:
+```sh
+
+root@c5b8341cbe07:/AirBnB_clone_v2# python3 -c 'print(__import__("3-deploy_web_static").do_pack.__doc__)'
+
+    Creates a .tgz archive from the contents of the web_static folder.
+
+    Returns:
+        str: The archive path if the archive has been correctly generated.
+        None: If the archive was not generated.
+    
+root@c5b8341cbe07:/AirBnB_clone_v2# python3 -c 'print(__import__("3-deploy_web_static").do_deploy.__doc__)'
+
+    Distributes an archive to the web servers.
+
+    Args:
+        archive_path (str): The path of the archive to distribute.
+
+    Returns:
+        bool: True if all operations have been done correctly, otherwise False.
+    
+root@c5b8341cbe07:/AirBnB_clone_v2# python3 -c 'print(__import__("3-deploy_web_static").deploy.__doc__)'
+
+    Creates and distributes an archive to the web servers.
+
+    Returns:
+        bool: True if all operations have been done correctly, otherwise False.
+
+```
+Added a script to check documentation:
+```sh
+
+python3 documentation-check.py *.py
+
+```
