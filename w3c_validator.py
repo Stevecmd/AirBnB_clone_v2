@@ -44,6 +44,8 @@ def __print_stderr(msg):
 
 
 def __is_empty(file):
+    """Check if file is empty
+    """
     if os.path.getsize(file) == 0:
         raise OSError("File '{}' is empty.".format(file))
 
