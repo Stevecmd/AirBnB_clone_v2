@@ -1,6 +1,22 @@
 #!/usr/bin/python3
 """
-Fabric script to create and distribute an archive to web servers
+Fabric script to create and distribute an archive to web servers.
+
+This script includes:
+- `do_pack`: Creates a .tgz archive from the contents of the web_static folder.
+- `do_deploy`: Distributes an archive to the web servers.
+- `deploy`: Creates and distributes an archive to the web servers.
+
+Dependencies:
+- Fabric
+- Cryptography
+
+Notes:
+- Suppresses CryptographyDeprecationWarning to avoid cluttering output.
+
+Warnings:
+- CryptographyDeprecationWarning: Ignored in this script.
+
 """
 
 from datetime import datetime
@@ -8,13 +24,7 @@ from fabric import Connection, task
 import os
 from os.path import exists, isdir
 import warnings
-from cryptography.utils import CryptographyDeprecationWarning
 
-# Suppress deprecation warnings
-warnings.filterwarnings(
-    action='ignore',
-    category=CryptographyDeprecationWarning
-)
 
 # Define the hosts, user, and key filename
 env_hosts = ['54.160.94.43', '34.203.38.175']
