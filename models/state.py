@@ -27,7 +27,14 @@ class State(BaseModel, Base):
             cascade="all, delete-orphan"
         )
     else:
-        name = ""
+        id = Column(Integer, primary_key=True)
+        name = Column(String(255), nullable=False)
+        created_at = Column(TIMESTAMP, server_default=func.now())
+        updated_at = Column(
+            TIMESTAMP,
+            server_default=func.now(),
+            onupdate=func.now()
+        )
 
     def __init__(self, *args, **kwargs):
         """Initializes state"""
