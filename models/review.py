@@ -10,6 +10,8 @@ from sqlalchemy.orm import relationship
 
 class Review(BaseModel, Base):
     """Representation of Review """
+    __tablename__ = 'states'
+    __table_args__ = {'extend_existing': True}
     if models.storage_type == 'db':
         __tablename__ = 'reviews'
         place_id = Column(String(60), ForeignKey('places.id'), nullable=False)
@@ -24,6 +26,8 @@ class Review(BaseModel, Base):
 
     def __init__(self, *args, **kwargs):
         """initializes Review"""
+        __tablename__ = 'reviews'
+        __table_args__ = {'extend_existing': True}
         super().__init__(*args, **kwargs)
         if 'place_id' not in kwargs:
             self.place_id = ""

@@ -22,6 +22,9 @@ else:
     Base = object
 
 
+Base = declarative_base()
+
+
 class BaseModel(Base):
     """The BaseModel class from which future classes will be derived"""
     __abstract__ = True
