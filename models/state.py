@@ -4,8 +4,9 @@ import models
 from models.base_model import BaseModel, Base
 from os import getenv
 import sqlalchemy
-from sqlalchemy import Column, String, ForeignKey
+from sqlalchemy import Column, String, ForeignKey, Integer, TIMESTAMP
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func 
 from models.city import City
 
 
