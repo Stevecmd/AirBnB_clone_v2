@@ -9,15 +9,14 @@
 
 <BODY>
     <H1>States</H1>
-
     <UL>
-      {% if states %}
-        {% for state in states %}
-        <LI style="list-style: none">
-          {{ state.id }}: <B>{{ state.name }}</B>
-        </LI>
-        {% endfor %}
-      {% endif %}
+        {% if states %}
+            {% for state in states %}
+               <LI style="list-style: none">
+                   {{ state.id }}: <B>{{ state.name }}</B>
+               </LI>
+            {% endfor %}
+        {% endif %}
     </UL>
 </BODY>
 </HTML>

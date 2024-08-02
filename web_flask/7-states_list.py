@@ -6,6 +6,8 @@ Flask application that lists all states from DBStorage
 import os
 import sys
 from flask import Flask, render_template
+from models import storage
+from models.state import State
 
 
 def setup_path_and_imports():
@@ -29,11 +31,17 @@ def teardown_db(exception):
     storage.close()
 
 
+@app.route('/', strict_slashes=False)
+def index():
+    """Redirect to /states_list"""
+    return redirect(url_for('states_list'))
+
+
 @app.route('/states_list', strict_slashes=False)
 def states_list():
     """Displays a HTML page with a list of all State objects"""
-    states = storage.all(State)
-    sorted_states = sorted(states.values(), key=lambda s: s.name)
+    states = storage.all(State).values()
+    sorted_states = sorted(states, key=lambda s: s.name)
     return render_template('7-states_list.html', states=sorted_states)
 
 
