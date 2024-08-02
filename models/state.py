@@ -43,28 +43,3 @@ class State(BaseModel, Base):
                 if city.state_id == self.id:
                     city_list.append(city)
             return city_list
-
-
-# # Conditional class definition for non-database storage
-# if getenv('HBNB_TYPE_STORAGE') != "db":
-#     class State(BaseModel):
-#         """State class for storing state information"""
-#         __tablename__ = 'states'
-#         __table_args__ = {'extend_existing': True}
-
-#         """Representation of state for file storage"""
-#         name = ""
-
-#         def __init__(self, *args, **kwargs):
-#             """Initializes state"""
-#             super().__init__(*args, **kwargs)
-
-#         @property
-#         def cities(self):
-#             """Getter for list of city instances related to the state"""
-#             city_list = []
-#             all_cities = models.storage.all(City)
-#             for city in all_cities.values():
-#                 if city.state_id == self.id:
-#                     city_list.append(city)
-#             return city_list
