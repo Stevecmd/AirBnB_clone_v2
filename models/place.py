@@ -1,18 +1,34 @@
 #!/usr/bin/python
-""" holds class City"""
+""" holds class Place"""
 import sqlalchemy
-from sqlalchemy import Column, String, ForeignKey
+from sqlalchemy import Column, String, ForeignKey, Table
 from sqlalchemy.orm import relationship
 from models.base_model import BaseModel, Base
 import models
 from os import getenv
-from sqlalchemy.orm import relationship
+
+
+storage_type = getenv('HBNB_TYPE_STORAGE')
+
+# Define the association table for the many-to-many relationship
+place_amenity = Table('place_amenity', Base.metadata,
+                      Column('place_id', String(60),
+                             ForeignKey('places.id'),
+                             primary_key=True,
+                             nullable=False
+                             ),
+                      Column(
+                        'amenity_id', String(60),
+                        ForeignKey('amenities.id'),
+                        primary_key=True,
+                        nullable=False)
+                      )
 
 
 class Place(BaseModel, Base):
-    """Representation of city """
+    """Representation of Place """
     __tablename__ = 'places'
-    if models.storage_type == "db":
+    if storage_type == "db":
         name = Column(String(128), nullable=False)
         user_id = Column(String(60), ForeignKey('users.id'), nullable=False)
         city_id = Column(String(60), ForeignKey('cities.id'), nullable=False)
@@ -23,12 +39,16 @@ class Place(BaseModel, Base):
         city = relationship("City", back_populates="places")
         state = relationship("State", back_populates="places")
         reviews = relationship("Review", back_populates="place")
+        amenities = relationship(
+            "Amenity", secondary=place_amenity, viewonly=False
+            )
     else:
         name = ""
         user_id = ""
         city_id = ""
         state_id = ""
         description = ""
+        amenities = []
 
     def __init__(self, *args, **kwargs):
         """initializes place"""

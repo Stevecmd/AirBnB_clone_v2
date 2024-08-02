@@ -7,3 +7,4 @@ models/engine/__pycache__/
 *.pyc
 myvenv/
 check-docs.py
+file.json
