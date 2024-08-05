@@ -45,6 +45,8 @@ class DBStorage:
         """Query on the current database session"""
         new_dict = {}
         if cls:
+            if isinstance(cls, str):
+                cls = classes.get(cls)
             objs = self.__session.query(cls).all()
             for obj in objs:
                 key = obj.__class__.__name__ + '.' + obj.id
