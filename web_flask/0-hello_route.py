@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 
 @app.route('/airbnb-onepage/', strict_slashes=False)
-def home():
+def index():
     """
     Returns a string 'Hello HBNB!'.
     """
