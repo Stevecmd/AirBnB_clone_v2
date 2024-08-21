@@ -47,20 +47,22 @@ def states_id(id):
     """Displays a HTML page with a list of City objects linked to the State."""
     try:
         logging.debug(f"Fetching state with id {id} from storage")
-        state = storage.all(State).get(id)
+        state = storage.get(State, id)
         logging.debug(f"Fetched state: {state}")
         if state:
             logging.debug(f"State found: {state}")
             cities = state.cities
             logging.debug(f"Cities linked to state: {cities}")
+            states_dict = storage.all(State)
             return render_template(
                 "9-states.html",
-                states=storage.all(State),
+                states=states_dict,
                 state=state,
                 cities=cities
             )
         else:
             logging.warning(f"No state found with id {id}")
+            logging.warning(f"State with id {id} does not exist")
             return render_template("404.html"), 404
     except Exception as e:
         logging.error(f"Error fetching state with id {id}: {e}", exc_info=True)
